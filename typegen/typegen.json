@@ -1,0 +1,7 @@
+{
+  "outDir": "../src/types/generated",
+  "specVersions": "moonriverVersions.jsonl",
+  "typesBundle": "moonriver",
+  "events": true,
+  "calls": true
+}
