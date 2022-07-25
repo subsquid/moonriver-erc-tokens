@@ -2,6 +2,7 @@ import { Account, ContractStandard, Token } from '../model';
 import { addTimeout } from '@subsquid/util-timeout';
 import { getContractInstance } from './contract';
 import { Context } from '../processor';
+import {contractCallTimeout} from "../config";
 
 export function createAccount(id: string): Account {
   return new Account({
@@ -25,7 +26,7 @@ function getDecoratedCallResult(rawValue: string | null): string | null {
    */
   if (regex.test(rawValue)) return null;
 
-  return decoratedValue;
+  return decoratedValue ? decoratedValue.replace(/\0/g, '') : decoratedValue;
 }
 
 export async function createToken({
@@ -54,19 +55,19 @@ export async function createToken({
   let decimals = null;
 
   try {
-    name = await addTimeout(contractInst.name(), 2);
+    name = await addTimeout(contractInst.name(), contractCallTimeout);
   } catch (e) {
     console.log(e);
   }
   try {
-    symbol = await addTimeout(contractInst.symbol(), 2);
+    symbol = await addTimeout(contractInst.symbol(), contractCallTimeout);
   } catch (e) {
     console.log(e);
   }
   try {
     decimals =
       contractStandard === ContractStandard.ERC20 && 'decimals' in contractInst
-        ? await addTimeout(contractInst.decimals(), 2)
+        ? await addTimeout(contractInst.decimals(), contractCallTimeout)
         : null;
   } catch (e) {
     console.log(e);

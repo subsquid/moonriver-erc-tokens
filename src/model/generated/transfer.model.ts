@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {Token} from "./token.model"
@@ -12,6 +12,7 @@ export class Transfer {
   @PrimaryColumn_()
   id!: string
 
+  @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint
 
@@ -29,6 +30,7 @@ export class Transfer {
   @ManyToOne_(() => Account, {nullable: false})
   to!: Account
 
+  @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 

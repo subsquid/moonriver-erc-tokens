@@ -5,29 +5,29 @@ enum ContractStandard {
 
 type Account @entity {
   id: ID!
-  transfersTotalCount: Int!
+  transfersTotalCount: Int! @index
   transfersSent: [Transfer!] @derivedFrom(field: "from")
-  transfersSentCount: Int!
+  transfersSentCount: Int! @index
   transfersReceived: [Transfer!] @derivedFrom(field: "to")
-  transfersReceivedCount: Int!
+  transfersReceivedCount: Int! @index
 }
 
 type Token @entity {
   id: ID!
-  name: String
-  symbol: String
+  name: String @index
+  symbol: String @index
   decimals: Int
-  contractStandard: ContractStandard
-  contractAddress: String!
+  contractStandard: ContractStandard @index
+  contractAddress: String! @index
 }
 
 type Transfer @entity {
   id: ID!
-  blockNumber: BigInt!
+  blockNumber: BigInt! @index
   timestamp: DateTime!
   eventIndex: Int!
   from: Account!
   to: Account!
-  amount: BigInt
+  amount: BigInt @index
   token: Token
 }
