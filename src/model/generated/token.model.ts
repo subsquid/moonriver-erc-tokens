@@ -19,7 +19,7 @@ export class Token {
   @Column_("int4", {nullable: true})
   decimals!: number | undefined | null
 
-  @Column_("varchar", {length: 6, nullable: true})
+  @Column_("varchar", {length: 7, nullable: true})
   contractStandard!: ContractStandard | undefined | null
 
   @Column_("text", {nullable: false})

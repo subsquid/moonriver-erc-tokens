@@ -3,6 +3,7 @@ import * as helpers from './helpers';
 import { getTokenEntityId } from './utils';
 import { Context } from '../processor';
 import { EntityManagerItem } from '../common/types';
+import { BigNumber } from 'ethers';
 
 class EntitiesManager {
   private context: Context | null = null;
@@ -32,12 +33,14 @@ class EntitiesManager {
   get({
     entityName,
     id,
+    idBn,
     contractAddress,
     contractStandard,
     blockHeight
   }: {
     entityName: EntityManagerItem;
     id?: string;
+    idBn?: BigNumber;
     contractAddress?: string;
     contractStandard?: ContractStandard;
     blockHeight?: number;
@@ -51,6 +54,7 @@ class EntitiesManager {
           throw new Error();
         return this.getToken({
           id,
+          idBn,
           contractAddress,
           contractStandard,
           blockHeight
@@ -77,11 +81,13 @@ class EntitiesManager {
 
   private async getToken({
     id,
+    idBn,
     contractAddress,
     contractStandard,
     blockHeight
   }: {
     id?: string;
+    idBn?: BigNumber;
     contractAddress: string;
     contractStandard: ContractStandard;
     blockHeight: number;
@@ -95,6 +101,7 @@ class EntitiesManager {
       if (!token || (token && (!token.name || !token.symbol))) {
         token = await helpers.createToken({
           tokenId: currentTokenId,
+          tokenIdBn: idBn,
           ctx: this.context,
           contractAddress,
           contractStandard,

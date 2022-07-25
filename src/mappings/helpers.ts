@@ -2,6 +2,7 @@ import { Account, ContractStandard, Token } from '../model';
 import { addTimeout } from '@subsquid/util-timeout';
 import { getContractInstance } from './contract';
 import { Context } from '../processor';
+import { BigNumber } from 'ethers';
 
 export function createAccount(id: string): Account {
   return new Account({
@@ -30,12 +31,14 @@ function getDecoratedCallResult(rawValue: string | null): string | null {
 
 export async function createToken({
   tokenId,
+  tokenIdBn,
   contractAddress,
   contractStandard,
   blockHeight,
   ctx
 }: {
   tokenId: string;
+  tokenIdBn?: BigNumber;
   contractAddress: string;
   contractStandard: ContractStandard;
   blockHeight: number;
@@ -49,23 +52,34 @@ export async function createToken({
   });
   if (!contractInst) throw new Error();
 
-  let name = null;
-  let symbol = null;
-  let decimals = null;
+  console.log(
+    '---uri - ',
+    'uri' in contractInst && tokenIdBn
+      ? await contractInst.uri(tokenIdBn)
+      : 'not_a_function'
+  );
+
+  let name: string | null = null;
+  let symbol: string | null = null;
+  let decimals: number | null = null;
 
   try {
-    name = await addTimeout(contractInst.name(), 2);
+    name =
+      'name' in contractInst ? await addTimeout(contractInst.name(), 2) : null;
   } catch (e) {
     console.log(e);
   }
   try {
-    symbol = await addTimeout(contractInst.symbol(), 2);
+    symbol =
+      'symbol' in contractInst
+        ? await addTimeout(contractInst.symbol(), 2)
+        : null;
   } catch (e) {
     console.log(e);
   }
   try {
     decimals =
-      contractStandard === ContractStandard.ERC20 && 'decimals' in contractInst
+      'decimals' in contractInst
         ? await addTimeout(contractInst.decimals(), 2)
         : null;
   } catch (e) {

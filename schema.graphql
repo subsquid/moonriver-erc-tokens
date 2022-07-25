@@ -1,6 +1,7 @@
 enum ContractStandard {
   ERC20
   ERC721
+  ERC1155
 }
 
 type Account @entity {
@@ -28,6 +29,7 @@ type Transfer @entity {
   eventIndex: Int!
   from: Account!
   to: Account!
+  operator: Account
   amount: BigInt
   token: Token
 }

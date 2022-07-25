@@ -29,6 +29,10 @@ export class Transfer {
   @ManyToOne_(() => Account, {nullable: false})
   to!: Account
 
+  @Index_()
+  @ManyToOne_(() => Account, {nullable: true})
+  operator!: Account | undefined | null
+
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 

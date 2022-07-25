@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { chainNode } from '../config';
 import { Contract as Erc20Contract } from '../abi/erc20';
 import { Contract as Erc721Contract } from '../abi/erc721';
+import { Contract as Erc1155Contract } from '../abi/erc1155';
 import { ContractStandard } from '../model';
 import { Context } from '../processor';
 
@@ -31,7 +32,7 @@ export const getContractInstance = ({
   ctx: Context;
   contractAddress: string;
   contractStandard: ContractStandard;
-}): Erc20Contract | Erc721Contract => {
+}): Erc20Contract | Erc721Contract | Erc1155Contract => {
   let Contract = null;
 
   switch (contractStandard) {
@@ -41,6 +42,10 @@ export const getContractInstance = ({
     case ContractStandard.ERC721:
       Contract = Erc721Contract;
       break;
+    case ContractStandard.ERC1155:
+      Contract = Erc1155Contract;
+      break;
+    default:
   }
   if (!Contract) throw new Error();
 

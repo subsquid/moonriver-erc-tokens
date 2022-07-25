@@ -15,12 +15,15 @@ type SaveTransactionInput = {
   contractStandard: ContractStandard;
   value?: BigNumber;
   tokenId?: string;
+  tokenIdBn?: BigNumber;
+  operator?: string;
 };
 
 export async function handleTransfer(
   props: SaveTransactionInput
 ): Promise<void> {
-  const { block, event, from, to, value, tokenId, contractStandard } = props;
+  const { block, event, from, to, operator, value, tokenId, tokenIdBn, contractStandard } =
+    props;
 
   const fromAccount = (await entitiesManager.get({
     entityName: EntityManagerItem.account,
@@ -30,6 +33,14 @@ export async function handleTransfer(
     entityName: EntityManagerItem.account,
     id: to
   })) as Account;
+
+  let operatorAccount = null;
+
+  if (operator)
+    operatorAccount = (await entitiesManager.get({
+      entityName: EntityManagerItem.account,
+      id: operator
+    })) as Account;
 
   const transfer = new Transfer({
     id: event.evmTxHash,
@@ -43,9 +54,11 @@ export async function handleTransfer(
       contractAddress: event.args.address,
       contractStandard,
       id: tokenId,
+      idBn: tokenIdBn,
       blockHeight: block.height
     })) as Token,
-    amount: value ? BigInt(value.toString()) : null
+    amount: value ? BigInt(value.toString()) : null,
+    operator: operatorAccount
   });
 
   fromAccount.transfersSentCount += 1;
