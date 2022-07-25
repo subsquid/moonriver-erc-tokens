@@ -3,6 +3,7 @@ import { addTimeout } from '@subsquid/util-timeout';
 import { getContractInstance } from './contract';
 import { Context } from '../processor';
 import { BigNumber } from 'ethers';
+import {contractCallTimeout} from "../config";
 
 export function createAccount(id: string): Account {
   return new Account({
@@ -26,7 +27,7 @@ function getDecoratedCallResult(rawValue: string | null): string | null {
    */
   if (regex.test(rawValue)) return null;
 
-  return decoratedValue;
+  return decoratedValue ? decoratedValue.replace(/\0/g, '') : decoratedValue;
 }
 
 export async function createToken({
@@ -65,14 +66,14 @@ export async function createToken({
 
   try {
     name =
-      'name' in contractInst ? await addTimeout(contractInst.name(), 2) : null;
+      'name' in contractInst ? await addTimeout(contractInst.name(), contractCallTimeout) : null;
   } catch (e) {
     console.log(e);
   }
   try {
     symbol =
       'symbol' in contractInst
-        ? await addTimeout(contractInst.symbol(), 2)
+        ? await addTimeout(contractInst.symbol(), contractCallTimeout)
         : null;
   } catch (e) {
     console.log(e);
@@ -80,7 +81,7 @@ export async function createToken({
   try {
     decimals =
       'decimals' in contractInst
-        ? await addTimeout(contractInst.decimals(), 2)
+        ? await addTimeout(contractInst.decimals(), contractCallTimeout)
         : null;
   } catch (e) {
     console.log(e);
