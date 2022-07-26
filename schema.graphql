@@ -4,6 +4,11 @@ enum ContractStandard {
   ERC1155
 }
 
+enum TransferType {
+  Single
+  Batch
+}
+
 type Account @entity {
   id: ID!
   transfersTotalCount: Int! @index
@@ -11,25 +16,49 @@ type Account @entity {
   transfersSentCount: Int! @index
   transfersReceived: [Transfer!] @derivedFrom(field: "to")
   transfersReceivedCount: Int! @index
+
+  ownedTokens: [NFToken!] @derivedFrom(field: "currentOwner")
+  ownedCollections: [Collection!] @derivedFrom(field: "currentOwner")
 }
 
-type Token @entity {
+type Collection @entity {
   id: ID!
+  collectionType: ContractStandard! @index
+  contractAddress: String! @index
+  nfts: [NFToken] @derivedFrom(field: "collection")
+  currentOwner: Account!
+  createdAtBlock: BigInt!
+  createdAt: DateTime!
+}
+
+# ERC721 / ERC1155 tokens (Non-Fungible Token)
+type NFToken @entity {
+  id: ID!
+  collection: Collection!
+  uri: String
+  currentOwner: Account! # "to" account in transfer
+}
+
+# ERC20 tokens (Fungible Token)
+type FToken @entity {
+  id: ID! # Contract address
   name: String @index
   symbol: String @index
   decimals: Int
-  contractStandard: ContractStandard @index
-  contractAddress: String! @index
 }
 
+union TransferToken = FToken | NFToken
+
 type Transfer @entity {
-  id: ID!
+  id: ID! # event.id-tokenContractAddress-tokenId (0000171336-000007-d71e0-0x33b1-65a0df-42)
   blockNumber: BigInt! @index
   timestamp: DateTime!
+  txnHash: String! # will be the same for all transfers within one TransferBatch event
   eventIndex: Int!
   from: Account!
   to: Account!
   operator: Account
   amount: BigInt @index
-  token: Token
+  token: TransferToken
+  type: TransferType
 }
