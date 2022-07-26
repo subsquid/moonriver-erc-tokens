@@ -1,11 +1,12 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
-import {Token} from "./token.model"
+import {TransferType} from "./_transferType"
+import {FToken} from "./fToken.model"
 
 @Entity_()
-export class Transfer {
-  constructor(props?: Partial<Transfer>) {
+export class FtTransfer {
+  constructor(props?: Partial<FtTransfer>) {
     Object.assign(this, props)
   }
 
@@ -22,6 +23,9 @@ export class Transfer {
   @Column_("int4", {nullable: false})
   eventIndex!: number
 
+  @Column_("text", {nullable: false})
+  txnHash!: string
+
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
   from!: Account
@@ -31,14 +35,14 @@ export class Transfer {
   to!: Account
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  operator!: Account | undefined | null
-
-  @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Token, {nullable: true})
-  token!: Token | undefined | null
+  @Column_("varchar", {length: 8, nullable: true})
+  transferType!: TransferType | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => FToken, {nullable: false})
+  token!: FToken
 }
