@@ -1,7 +1,7 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
-import {FtTransfer} from "./ftTransfer.model"
-import {NftTransfer} from "./nftTransfer.model"
-import {NFToken} from "./nfToken.model"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
+import {AccountFtTransfer} from "./accountFtTransfer.model"
+import {AccountNftTransfer} from "./accountNftTransfer.model"
+import {NfToken} from "./nfToken.model"
 import {Collection} from "./collection.model"
 
 @Entity_()
@@ -13,44 +13,14 @@ export class Account {
   @PrimaryColumn_()
   id!: string
 
-  @Index_()
-  @Column_("int4", {nullable: false})
-  ftTransfersTotalCount!: number
+  @OneToMany_(() => AccountFtTransfer, e => e.account)
+  ftTransfers!: AccountFtTransfer[]
 
-  @OneToMany_(() => FtTransfer, e => e.from)
-  ftTransfersSent!: FtTransfer[]
+  @OneToMany_(() => AccountNftTransfer, e => e.account)
+  nftTransfers!: AccountNftTransfer[]
 
-  @Index_()
-  @Column_("int4", {nullable: false})
-  ftTransfersSentCount!: number
-
-  @OneToMany_(() => FtTransfer, e => e.to)
-  ftTransfersReceived!: FtTransfer[]
-
-  @Index_()
-  @Column_("int4", {nullable: false})
-  ftTransfersReceivedCount!: number
-
-  @Index_()
-  @Column_("int4", {nullable: false})
-  nftTransfersTotalCount!: number
-
-  @OneToMany_(() => NftTransfer, e => e.from)
-  nftTransfersSent!: NftTransfer[]
-
-  @Index_()
-  @Column_("int4", {nullable: false})
-  nftTransfersSentCount!: number
-
-  @OneToMany_(() => NftTransfer, e => e.to)
-  nftTransfersReceived!: NftTransfer[]
-
-  @Index_()
-  @Column_("int4", {nullable: false})
-  nftTransfersReceivedCount!: number
-
-  @OneToMany_(() => NFToken, e => e.currentOwner)
-  ownedTokens!: NFToken[]
+  @OneToMany_(() => NfToken, e => e.currentOwner)
+  ownedTokens!: NfToken[]
 
   @OneToMany_(() => Collection, e => e.currentOwner)
   ownedCollections!: Collection[]

@@ -1,5 +1,5 @@
 export enum TransferType {
-  Transfer = "Transfer",
-  Mint = "Mint",
-  Burn = "Burn",
+  TRANSFER = "TRANSFER",
+  MINT = "MINT",
+  BURN = "BURN",
 }

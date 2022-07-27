@@ -18,18 +18,17 @@ enum TransferDirection {
 type Account @entity {
   id: ID!
 
-  ftTransfers: [AccountFtTransfer!] @derivedFrom(field: "account")
-  nftTransfers: [AccountNftTransfer!] @derivedFrom(field: "account")
+  ftTransfers: [AccountFtTransfer] @derivedFrom(field: "account")
+  nftTransfers: [AccountNftTransfer] @derivedFrom(field: "account")
 
-  ownedTokens: [NFToken!] @derivedFrom(field: "currentOwner")
-  ownedCollections: [Collection!] @derivedFrom(field: "currentOwner")
+  ownedTokens: [NfToken] @derivedFrom(field: "currentOwner")
+  ownedCollections: [Collection] @derivedFrom(field: "currentOwner")
 }
 
 type Collection @entity {
-  id: ID!
+  id: ID! # Contract address
   collectionType: ContractStandard! @index
-  contractAddress: String! @index
-  nfts: [NFToken] @derivedFrom(field: "collection")
+  nfts: [NfToken] @derivedFrom(field: "collection")
   currentOwner: Account!
   createdAtBlock: BigInt!
   createdAt: DateTime!
@@ -42,18 +41,19 @@ interface Token {
 }
 
 # ERC721 / ERC1155 tokens (Non-Fungible Token)
-type NFToken implements Token @entity {
-  id: ID!
+type NfToken implements Token @entity {
+  id: ID! # <token_contract_address>-<token_id>
+  nativeId: String!
   name: String @index
   symbol: String @index
   collection: Collection!
-  uri: String!
+  uri: String
   currentOwner: Account! # "to" account in transfer
 }
 
 # ERC20 tokens (Fungible Token)
 type FToken implements Token @entity {
-  id: ID!
+  id: ID! # Token contract address
   name: String @index
   symbol: String @index
   decimals: Int
@@ -94,9 +94,9 @@ type NftTransfer implements Transfer @entity {
   txnHash: String!
   from: Account!
   to: Account!
-  amount: BigInt @index
+  amount: BigInt! @index
   transferType: TransferType @index
-  token: NFToken!
+  token: NfToken!
   isBatch: Boolean!
 }
 

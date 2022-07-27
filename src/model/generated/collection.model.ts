@@ -1,7 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, OneToMany as OneToMany_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {ContractStandard} from "./_contractStandard"
-import {NFToken} from "./nfToken.model"
+import {NfToken} from "./nfToken.model"
 import {Account} from "./account.model"
 
 @Entity_()
@@ -17,12 +17,8 @@ export class Collection {
   @Column_("varchar", {length: 7, nullable: false})
   collectionType!: ContractStandard
 
-  @Index_()
-  @Column_("text", {nullable: false})
-  contractAddress!: string
-
-  @OneToMany_(() => NFToken, e => e.collection)
-  nfts!: NFToken[]
+  @OneToMany_(() => NfToken, e => e.collection)
+  nfts!: NfToken[]
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})

@@ -2,7 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {TransferType} from "./_transferType"
-import {NFToken} from "./nfToken.model"
+import {NfToken} from "./nfToken.model"
 
 @Entity_()
 export class NftTransfer {
@@ -43,8 +43,8 @@ export class NftTransfer {
   transferType!: TransferType | undefined | null
 
   @Index_()
-  @ManyToOne_(() => NFToken, {nullable: false})
-  token!: NFToken
+  @ManyToOne_(() => NfToken, {nullable: false})
+  token!: NfToken
 
   @Column_("bool", {nullable: false})
   isBatch!: boolean
