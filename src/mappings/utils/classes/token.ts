@@ -13,7 +13,7 @@ export class FTokenManager extends EntitiesManager {
     super();
   }
 
-  async get({
+  async getOrCreate({
     contractAddress,
     contractStandard,
     block
@@ -50,7 +50,7 @@ export class NfTokenManager extends EntitiesManager {
     super();
   }
 
-  async get({
+  async getOrCreate({
     id,
     contractAddress,
     contractStandard,

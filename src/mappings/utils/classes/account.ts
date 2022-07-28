@@ -7,7 +7,7 @@ export class AccountsManager extends EntitiesManager {
         super();
     }
 
-    async get(id: string): Promise<Account> {
+    async getOrCreate(id: string): Promise<Account> {
         if (!this.context) throw new Error('context is not defined');
         let account = this.entitiesMap.get(id);
 

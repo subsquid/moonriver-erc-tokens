@@ -31,11 +31,10 @@ export async function createNfToken({
     ctx
   });
 
-  const collection = await utils.entity.collectionManager.get({
+  const collection = await utils.entity.collectionManager.getOrCreate({
     id: contractAddress,
     contractStandard,
-    block,
-    owner // TODO must be updated
+    block
   });
 
   return new NfToken({

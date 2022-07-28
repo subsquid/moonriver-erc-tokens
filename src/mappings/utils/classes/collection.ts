@@ -11,16 +11,14 @@ export class CollectionManager extends EntitiesManager {
     super();
   }
 
-  async get({
+  async getOrCreate({
     id,
     contractStandard,
-    block,
-    owner
+    block
   }: {
     id: string;
     contractStandard: ContractStandard;
     block: SubstrateBlock;
-    owner: Account;
   }): Promise<Collection> {
     if (!this.context) throw new Error('context is not defined');
 
@@ -28,16 +26,14 @@ export class CollectionManager extends EntitiesManager {
 
     if (!collection) {
       collection = await this.context.store.get(Collection, {
-        where: { id },
-        relations: { currentOwner: true }
+        where: { id }
       });
       if (!collection) {
         collection = createCollection({
           id,
           ctx: this.context,
           contractStandard,
-          block,
-          owner
+          block
         });
       }
       this.add<Collection>(collection);

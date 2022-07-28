@@ -22,14 +22,12 @@ type Account @entity {
   nftTransfers: [AccountNftTransfer] @derivedFrom(field: "account")
 
   ownedTokens: [NfToken] @derivedFrom(field: "currentOwner")
-  ownedCollections: [Collection] @derivedFrom(field: "currentOwner")
 }
 
 type Collection @entity {
   id: ID! # Contract address
   collectionType: ContractStandard! @index
   nfts: [NfToken] @derivedFrom(field: "collection")
-  currentOwner: Account!
   createdAtBlock: BigInt!
   createdAt: DateTime!
 }
@@ -94,6 +92,7 @@ type NftTransfer implements Transfer @entity {
   txnHash: String!
   from: Account!
   to: Account!
+  operator: Account
   amount: BigInt! @index
   transferType: TransferType @index
   token: NfToken!

@@ -6,6 +6,8 @@ import {
   ftTransferManager,
   nftTransferManager,
   collectionManager,
+  accountsFtTransferManager,
+  accountsNftTransferManager,
   saveAllEntities
 } from './entityUtils';
 
@@ -16,6 +18,8 @@ export const entity = {
   ftTransferManager,
   nftTransferManager,
   collectionManager,
+  accountsFtTransferManager,
+  accountsNftTransferManager,
   saveAllEntities
 };
 export const common = { getTokenEntityId };

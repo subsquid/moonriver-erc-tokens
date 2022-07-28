@@ -35,8 +35,12 @@ export class NftTransfer {
   to!: Account
 
   @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
+  @ManyToOne_(() => Account, {nullable: true})
+  operator!: Account | undefined | null
+
+  @Index_()
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
 
   @Index_()
   @Column_("varchar", {length: 8, nullable: true})
