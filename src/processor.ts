@@ -11,16 +11,6 @@ import * as erc1155 from './abi/erc1155';
 import * as modules from './mappings';
 import * as config from './config';
 import * as utils from './mappings/utils';
-import {
-  Account,
-  FToken,
-  NfToken,
-  FtTransfer,
-  NftTransfer,
-  Collection,
-  AccountNftTransfer,
-  AccountFtTransfer
-} from './model';
 
 const database = new TypeormDatabase();
 const processor = new SubstrateBatchProcessor()
@@ -49,14 +39,7 @@ type Item = BatchProcessorItem<typeof processor>;
 export type Context = BatchContext<Store, Item>;
 
 processor.run(database, async (ctx: Context) => {
-  utils.entity.accountsManager.init<Account>(ctx);
-  utils.entity.fTokenManager.init<FToken>(ctx);
-  utils.entity.nfTokenManager.init<NfToken>(ctx);
-  utils.entity.ftTransferManager.init<FtTransfer>(ctx);
-  utils.entity.nftTransferManager.init<NftTransfer>(ctx);
-  utils.entity.collectionManager.init<Collection>(ctx);
-  utils.entity.accountsFtTransferManager.init<AccountFtTransfer>(ctx);
-  utils.entity.accountsNftTransferManager.init<AccountNftTransfer>(ctx);
+  utils.entity.initAllEntityManagers(ctx);
 
   for await (const block of ctx.blocks) {
     for await (const item of block.items) {

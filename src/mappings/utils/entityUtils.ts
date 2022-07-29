@@ -1,4 +1,16 @@
 import * as entityManagerClasses from './classes';
+import { Context } from '../../processor';
+
+export function initAllEntityManagers(ctx: Context): void {
+  accountsManager.init(ctx);
+  collectionManager.init(ctx);
+  fTokenManager.init(ctx);
+  nfTokenManager.init(ctx);
+  ftTransferManager.init(ctx);
+  nftTransferManager.init(ctx);
+  accountsFtTransferManager.init(ctx);
+  accountsNftTransferManager.init(ctx);
+}
 
 export async function saveAllEntities(): Promise<void> {
   await accountsManager.saveAll();
@@ -17,5 +29,7 @@ export const nfTokenManager = new entityManagerClasses.NfTokenManager();
 export const ftTransferManager = new entityManagerClasses.FtTransferManager();
 export const nftTransferManager = new entityManagerClasses.NftTransferManager();
 export const collectionManager = new entityManagerClasses.CollectionManager();
-export const accountsFtTransferManager = new entityManagerClasses.AccountsFtTransferManager();
-export const accountsNftTransferManager = new entityManagerClasses.AccountsNftTransferManager();
+export const accountsFtTransferManager =
+  new entityManagerClasses.AccountsFtTransferManager();
+export const accountsNftTransferManager =
+  new entityManagerClasses.AccountsNftTransferManager();

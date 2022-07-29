@@ -9,9 +9,9 @@ export class EntitiesManager {
 
   entitiesMap = new Map();
 
-  init<T>(ctx: Context) {
+  init(ctx: Context) {
     this.context = ctx;
-    this.entitiesMap = new Map() as Map<string, T>;
+    this.entitiesMap = new Map();
     return this;
   }
 
