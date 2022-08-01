@@ -4,18 +4,17 @@ type EntityWithId = {
   id: string;
 };
 
-export class EntitiesManager {
+export class EntitiesManager<T extends EntityWithId> {
   context: Context | null = null;
 
-  entitiesMap = new Map();
+  entitiesMap: Map<string, T> = new Map();
 
   init(ctx: Context) {
     this.context = ctx;
-    this.entitiesMap = new Map();
     return this;
   }
 
-  add<T extends EntityWithId>(entity: T): void {
+  add(entity: T): void {
     this.entitiesMap.set(entity.id, entity);
   }
 

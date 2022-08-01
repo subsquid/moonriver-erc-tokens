@@ -6,11 +6,7 @@ import { EntitiesManager } from './common';
 /**
  * ::::::::::::: ERC721/ERC1155 TOKEN COLLECTION :::::::::::::
  */
-export class CollectionManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class CollectionManager extends EntitiesManager<Collection> {
   async getOrCreate({
     id,
     contractStandard,
@@ -36,7 +32,7 @@ export class CollectionManager extends EntitiesManager {
           block
         });
       }
-      this.add<Collection>(collection);
+      this.add(collection);
     }
 
     return collection;

@@ -13,11 +13,7 @@ import { getNftTransferEntityId, getTransferType } from '../common';
 /**
  * ::::::::::::: TRANSFERS ERC20 TOKEN :::::::::::::
  */
-export class FtTransferManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class FtTransferManager extends EntitiesManager<FtTransfer> {
   async getOrCreate({
     from,
     to,
@@ -51,7 +47,7 @@ export class FtTransferManager extends EntitiesManager {
       transferType: getTransferType(from, to)
     });
 
-    this.add<FtTransfer>(transfer);
+    this.add(transfer);
 
     return transfer;
   }
@@ -59,11 +55,7 @@ export class FtTransferManager extends EntitiesManager {
 /**
  * ::::::::::::: TRANSFERS ERC721/ERC1155 TOKEN :::::::::::::
  */
-export class NftTransferManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class NftTransferManager extends EntitiesManager<NftTransfer> {
   async getOrCreate({
     from,
     to,
@@ -112,7 +104,7 @@ export class NftTransferManager extends EntitiesManager {
       isBatch
     });
 
-    this.add<NftTransfer>(transfer);
+    this.add(transfer);
 
     return transfer;
   }

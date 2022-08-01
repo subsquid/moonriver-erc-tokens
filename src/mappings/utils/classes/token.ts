@@ -8,11 +8,7 @@ import { EntitiesManager } from './common';
 /**
  * ::::::::::::: ERC20 TOKEN :::::::::::::
  */
-export class FTokenManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class FTokenManager extends EntitiesManager<FToken> {
   async getOrCreate({
     contractAddress,
     contractStandard,
@@ -35,7 +31,7 @@ export class FTokenManager extends EntitiesManager {
           block
         });
       }
-      this.add<FToken>(token);
+      this.add(token);
     }
 
     return token;
@@ -45,11 +41,7 @@ export class FTokenManager extends EntitiesManager {
 /**
  * ::::::::::::: ERC721/ERC1155 TOKEN :::::::::::::
  */
-export class NfTokenManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class NfTokenManager extends EntitiesManager<NfToken> {
   async getOrCreate({
     id,
     contractAddress,
@@ -86,7 +78,7 @@ export class NfTokenManager extends EntitiesManager {
           owner
         });
       }
-      this.add<NfToken>(token);
+      this.add(token);
     }
 
     return token;

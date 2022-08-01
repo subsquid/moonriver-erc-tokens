@@ -6,18 +6,13 @@ import {
   NftTransfer,
   TransferDirection
 } from '../../../model';
-import { createAccount } from '../../accounts';
 import { EntitiesManager } from './common';
 import {
   createAccountFtTransfer,
   createAccountNftTransfer
 } from '../../accountTransfer';
 
-export class AccountsFtTransferManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class AccountsFtTransferManager extends EntitiesManager<AccountFtTransfer> {
   async getOrCreate({
     id = null,
     account,
@@ -39,18 +34,14 @@ export class AccountsFtTransferManager extends EntitiesManager {
       if (!accountTransfer) {
         accountTransfer = createAccountFtTransfer(account, transfer, direction);
       }
-      this.add<AccountFtTransfer>(accountTransfer);
+      this.add(accountTransfer);
     }
 
     return accountTransfer;
   }
 }
 
-export class AccountsNftTransferManager extends EntitiesManager {
-  constructor() {
-    super();
-  }
-
+export class AccountsNftTransferManager extends EntitiesManager<AccountNftTransfer> {
   async getOrCreate({
     id = null,
     account,
@@ -76,7 +67,7 @@ export class AccountsNftTransferManager extends EntitiesManager {
           direction
         );
       }
-      this.add<AccountNftTransfer>(accountTransfer);
+      this.add(accountTransfer);
     }
 
     return accountTransfer;
