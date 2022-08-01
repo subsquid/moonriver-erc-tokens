@@ -20,7 +20,13 @@ function getDecoratedCallResult(rawValue: string | null): string | null {
    */
   if (regex.test(rawValue)) return null;
 
-  return decoratedValue ? decoratedValue.replace(/\0/g, '') : decoratedValue;
+  /**
+   * We need replace null byte in string value to prevent error:
+   * "QueryFailedError: invalid byte sequence for encoding \"UTF8\": 0x00\n    at PostgresQueryRunner.query ..."
+   */
+  return decoratedValue
+    ? decoratedValue.replace(/\0/g, '').replace(/\x00/g, '')
+    : decoratedValue;
 }
 
 export async function getTokenDetails({

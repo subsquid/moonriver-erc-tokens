@@ -85,14 +85,4 @@ export async function handleErc1155TransferBatch(
       transfer
     });
   }
-
-  // await handleTransfer({
-  //   contractStandard: ContractStandard.ERC721,
-  //   tokenId: tokenId.toString(),
-  //   event,
-  //   ctx,
-  //   block,
-  //   from,
-  //   to
-  // });
 }
