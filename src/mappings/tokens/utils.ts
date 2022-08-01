@@ -7,6 +7,10 @@ import { TokenDetails } from '../../common/types';
 
 import * as contracts from '../contracts';
 
+function clearNullBytes(rawStr: string): string {
+  return rawStr ? rawStr.replace(/\0/g, '') : rawStr;
+}
+
 function getDecoratedCallResult(rawValue: string | null): string | null {
   const decoratedValue: string | null = rawValue;
 
@@ -24,9 +28,7 @@ function getDecoratedCallResult(rawValue: string | null): string | null {
    * We need replace null byte in string value to prevent error:
    * "QueryFailedError: invalid byte sequence for encoding \"UTF8\": 0x00\n    at PostgresQueryRunner.query ..."
    */
-  return decoratedValue
-    ? decoratedValue.replace(/\0/g, '').replace(/\x00/g, '')
-    : decoratedValue;
+  return decoratedValue ? clearNullBytes(decoratedValue) : decoratedValue;
 }
 
 export async function getTokenDetails({
@@ -101,11 +103,12 @@ export async function getTokenDetails({
   }
   try {
     if ('uri' in contractInst && tokenId) {
-      uri = await addTimeout(contractInst.uri(tokenId), contractCallTimeout);
+      uri = clearNullBytes(
+        await addTimeout(contractInst.uri(tokenId), contractCallTimeout)
+      );
     } else if ('tokenURI' in contractInst && tokenId) {
-      uri = await addTimeout(
-        contractInst.tokenURI(tokenId),
-        contractCallTimeout
+      uri = clearNullBytes(
+        await addTimeout(contractInst.tokenURI(tokenId), contractCallTimeout)
       );
     }
   } catch (e) {
@@ -113,8 +116,8 @@ export async function getTokenDetails({
   }
 
   return {
-    name: getDecoratedCallResult(name),
     symbol: getDecoratedCallResult(symbol),
+    name: getDecoratedCallResult(name),
     decimals,
     uri
   };
