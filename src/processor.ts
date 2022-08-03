@@ -30,7 +30,8 @@ const processor = new SubstrateBatchProcessor()
         ].topic,
         erc1155.events[
           'TransferSingle(address,address,address,uint256,uint256)'
-        ].topic
+        ].topic,
+        erc1155.events['URI(string,uint256)'].topic
       ]
     ]
   });
@@ -74,6 +75,13 @@ processor.run(database, async (ctx: Context) => {
             'TransferSingle(address,address,address,uint256,uint256)'
           ].topic:
             await modules.handleErc1155TransferSingle(
+              ctx,
+              block.header,
+              item.event
+            );
+            break;
+          case erc1155.events['URI(string,uint256)'].topic:
+            await modules.handleErc1155UriChanged(
               ctx,
               block.header,
               item.event

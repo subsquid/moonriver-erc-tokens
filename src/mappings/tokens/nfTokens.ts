@@ -1,10 +1,16 @@
 import { BigNumber } from 'ethers';
-import { ContractStandard, NfToken, Account } from '../../model';
+import {
+  ContractStandard,
+  NfToken,
+  Account,
+  TransferDirection
+} from '../../model';
 import { Context } from '../../processor';
 import * as utils from '../utils';
-import { SubstrateBlock } from '@subsquid/substrate-processor';
+import { EvmLogEvent, SubstrateBlock } from '@subsquid/substrate-processor';
 
 import { getTokenDetails } from './utils';
+import * as erc1155 from '../../abi/erc1155';
 
 export async function createNfToken({
   id,
@@ -46,4 +52,29 @@ export async function createNfToken({
     uri,
     collection
   });
+}
+
+export async function handleErc1155UriChanged(
+  ctx: Context,
+  block: SubstrateBlock,
+  event: EvmLogEvent
+): Promise<void> {
+  const { id, value } = erc1155.events['URI(string,uint256)'].decode(
+    event.args
+  );
+
+  const token = await utils.entity.nfTokenManager.get(NfToken, id.toString(), {
+    currentOwner: true,
+    collection: true
+  });
+
+  if (!token) throw new Error('Token is not existing.');
+  console.log(
+    `URI of token ${id.toString()} has been updated at block: ${block.height.toString()} | tx: ${
+      event.evmTxHash
+    }`
+  );
+  token.uri = value;
+  utils.entity.nfTokenManager.add(token);
+  throw new Error('DEBUG');
 }

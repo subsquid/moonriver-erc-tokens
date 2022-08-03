@@ -19,13 +19,6 @@ export async function handleErc1155TransferSingle(
     'TransferSingle(address,address,address,uint256,uint256)'
   ].decode(event.args);
 
-  // console.log('===========================================================');
-  // console.log(block.height);
-  // console.log(event.evmTxHash);
-  // console.log(event.args);
-  // console.log('handleErc1155TransferSingle');
-  // console.log(operator, from, to, id.toString(), value.toString());
-
   const transfer = await utils.entity.nftTransferManager.getOrCreate({
     contractStandard: ContractStandard.ERC1155,
     isBatch: false,

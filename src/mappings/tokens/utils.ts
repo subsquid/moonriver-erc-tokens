@@ -8,6 +8,10 @@ import { TokenDetails } from '../../common/types';
 import * as contracts from '../contracts';
 
 function clearNullBytes(rawStr: string): string {
+  /**
+   * We need replace null byte in string value to prevent error:
+   * "QueryFailedError: invalid byte sequence for encoding \"UTF8\": 0x00\n    at PostgresQueryRunner.query ..."
+   */
   return rawStr ? rawStr.replace(/\0/g, '') : rawStr;
 }
 
@@ -24,10 +28,6 @@ function getDecoratedCallResult(rawValue: string | null): string | null {
    */
   if (regex.test(rawValue)) return null;
 
-  /**
-   * We need replace null byte in string value to prevent error:
-   * "QueryFailedError: invalid byte sequence for encoding \"UTF8\": 0x00\n    at PostgresQueryRunner.query ..."
-   */
   return decoratedValue ? clearNullBytes(decoratedValue) : decoratedValue;
 }
 
