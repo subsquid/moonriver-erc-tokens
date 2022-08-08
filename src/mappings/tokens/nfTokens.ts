@@ -46,6 +46,8 @@ export async function createNfToken({
   return new NfToken({
     nativeId: nativeId.toString(),
     currentOwner: owner,
+    isBurned: false,
+    amount: BigInt(0),
     id,
     name,
     symbol,
@@ -59,6 +61,7 @@ export async function handleErc1155UriChanged(
   block: SubstrateBlock,
   event: EvmLogEvent
 ): Promise<void> {
+  console.log('-----------handleErc1155UriChanged');
   const { id, value } = erc1155.events['URI(string,uint256)'].decode(
     event.args
   );

@@ -8,7 +8,12 @@ import {
 } from '../../../model';
 import { accountsManager, fTokenManager, nfTokenManager } from '../entityUtils';
 import { EntitiesManager } from './common';
-import { getNftTransferEntityId, getTransferType } from '../common';
+import {
+  getNftTransferEntityId,
+  getTokenTotalSupply,
+  getTokenBurnedStatus,
+  getTransferType
+} from '../common';
 
 /**
  * ::::::::::::: TRANSFERS ERC20 TOKEN :::::::::::::
@@ -82,6 +87,26 @@ export class NftTransferManager extends EntitiesManager<NftTransfer> {
     const operatorAccount = operator
       ? await accountsManager.getOrCreate(operator)
       : null;
+    const token = await nfTokenManager.getOrCreate({
+      id: tokenId,
+      contractAddress: event.args.address,
+      owner: toAccount,
+      contractStandard,
+      block
+    });
+    const transferType = getTransferType(from, to);
+
+    token.amount = getTokenTotalSupply(
+      token.amount,
+      BigInt(amount.toString()),
+      transferType
+    );
+    token.isBurned =
+      contractStandard === ContractStandard.ERC721
+        ? transferType === TransferType.BURN
+        : getTokenBurnedStatus(token.amount);
+
+    nfTokenManager.add(token);
 
     const transfer = new NftTransfer({
       id: getNftTransferEntityId(event.id, tokenId.toString()),
@@ -89,18 +114,12 @@ export class NftTransferManager extends EntitiesManager<NftTransfer> {
       timestamp: new Date(block.timestamp),
       eventIndex: event.indexInBlock,
       txnHash: event.evmTxHash,
+      amount: BigInt(amount.toString()),
       from: fromAccount,
       to: toAccount,
       operator: operatorAccount,
-      token: await nfTokenManager.getOrCreate({
-        id: tokenId,
-        contractAddress: event.args.address,
-        owner: toAccount,
-        contractStandard,
-        block
-      }),
-      amount: BigInt(amount.toString()),
-      transferType: getTransferType(from, to),
+      transferType,
+      token,
       isBatch
     });
 

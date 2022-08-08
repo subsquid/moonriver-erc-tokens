@@ -1,5 +1,5 @@
-module.exports = class Data1659003504499 {
-  name = 'Data1659003504499'
+module.exports = class Data1659982144440 {
+  name = 'Data1659982144440'
 
   async up(db) {
     await db.query(`CREATE TABLE "f_token" ("id" character varying NOT NULL, "name" text, "symbol" text, "decimals" integer, CONSTRAINT "PK_da896c08df3022e579355d781b9" PRIMARY KEY ("id"))`)
@@ -17,11 +17,13 @@ module.exports = class Data1659003504499 {
     await db.query(`CREATE INDEX "IDX_35cf1ac6d922fe093f515c54bb" ON "account_ft_transfer" ("account_id") `)
     await db.query(`CREATE TABLE "collection" ("id" character varying NOT NULL, "collection_type" character varying(7) NOT NULL, "created_at_block" numeric NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_ad3f485bbc99d875491f44d7c85" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_3fecce93788f86b3c2d76f5bb2" ON "collection" ("collection_type") `)
-    await db.query(`CREATE TABLE "nf_token" ("id" character varying NOT NULL, "native_id" text NOT NULL, "name" text, "symbol" text, "uri" text, "collection_id" character varying NOT NULL, "current_owner_id" character varying NOT NULL, CONSTRAINT "PK_4b875f332d287d53286f0120060" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "nf_token" ("id" character varying NOT NULL, "native_id" text NOT NULL, "name" text, "symbol" text, "uri" text, "amount" numeric NOT NULL, "is_burned" boolean NOT NULL, "collection_id" character varying NOT NULL, "current_owner_id" character varying NOT NULL, CONSTRAINT "PK_4b875f332d287d53286f0120060" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_062fda9c8d3cfc052e32dee8e4" ON "nf_token" ("name") `)
     await db.query(`CREATE INDEX "IDX_65b31e75b2f1d27835196b2be0" ON "nf_token" ("symbol") `)
     await db.query(`CREATE INDEX "IDX_edd78f0b817ba4d3f9d239d10d" ON "nf_token" ("collection_id") `)
     await db.query(`CREATE INDEX "IDX_70ed98b811638d56141fecf0fb" ON "nf_token" ("current_owner_id") `)
+    await db.query(`CREATE INDEX "IDX_dbc8d2bdb09faa872564c761c2" ON "nf_token" ("amount") `)
+    await db.query(`CREATE INDEX "IDX_d557eb6f61c799175d93db5a0d" ON "nf_token" ("is_burned") `)
     await db.query(`CREATE TABLE "nft_transfer" ("id" character varying NOT NULL, "block_number" numeric NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "event_index" integer NOT NULL, "txn_hash" text NOT NULL, "amount" numeric NOT NULL, "transfer_type" character varying(8), "is_batch" boolean NOT NULL, "from_id" character varying NOT NULL, "to_id" character varying NOT NULL, "operator_id" character varying, "token_id" character varying NOT NULL, CONSTRAINT "PK_2d9d4b37560ecbcae8bd13026ab" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_14a7b9aab04cc732ed3c451e46" ON "nft_transfer" ("block_number") `)
     await db.query(`CREATE INDEX "IDX_e25e662117911bbbf337f8dcb6" ON "nft_transfer" ("from_id") `)
@@ -70,6 +72,8 @@ module.exports = class Data1659003504499 {
     await db.query(`DROP INDEX "public"."IDX_65b31e75b2f1d27835196b2be0"`)
     await db.query(`DROP INDEX "public"."IDX_edd78f0b817ba4d3f9d239d10d"`)
     await db.query(`DROP INDEX "public"."IDX_70ed98b811638d56141fecf0fb"`)
+    await db.query(`DROP INDEX "public"."IDX_dbc8d2bdb09faa872564c761c2"`)
+    await db.query(`DROP INDEX "public"."IDX_d557eb6f61c799175d93db5a0d"`)
     await db.query(`DROP TABLE "nft_transfer"`)
     await db.query(`DROP INDEX "public"."IDX_14a7b9aab04cc732ed3c451e46"`)
     await db.query(`DROP INDEX "public"."IDX_e25e662117911bbbf337f8dcb6"`)

@@ -1,4 +1,5 @@
 import { TransferType } from '../../model';
+import { BigNumber } from 'ethers';
 
 export const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -40,4 +41,29 @@ export const getTransferType = (from: string, to: string): TransferType => {
   }
 
   return TransferType.TRANSFER;
+};
+
+export const getTokenTotalSupply = (
+  currentAmount: BigInt,
+  newAmount: BigInt,
+  txType: TransferType
+): bigint => {
+  const newValue =
+    txType === TransferType.MINT
+      ? BigInt(
+          BigNumber.from(currentAmount)
+            .add(BigNumber.from(newAmount))
+            .toString()
+        )
+      : BigInt(
+          BigNumber.from(currentAmount)
+            .sub(BigNumber.from(newAmount))
+            .toString()
+        );
+
+  return newValue >= 0 ? newValue : BigInt(0);
+};
+
+export const getTokenBurnedStatus = (currentAmount: BigInt): boolean => {
+  return currentAmount <= BigInt(0);
 };

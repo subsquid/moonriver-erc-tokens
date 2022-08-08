@@ -47,6 +47,8 @@ type NfToken implements Token @entity {
   collection: Collection!
   uri: String
   currentOwner: Account! # "to" account in transfer
+  amount: BigInt! @index
+  isBurned: Boolean! @index
 }
 
 # ERC20 tokens (Fungible Token)

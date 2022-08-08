@@ -56,30 +56,26 @@ export class NfTokenManager extends EntitiesManager<NfToken> {
     block: SubstrateBlock;
   }): Promise<NfToken> {
     if (!this.context) throw new Error('context is not defined');
-    const tokenEntityId = getTokenEntityId(contractAddress, id.toString());
-    let token = this.entitiesMap.get(tokenEntityId);
 
-    if (!token) {
-      token = await this.context.store.get(NfToken, {
-        where: { id: tokenEntityId },
-        relations: {
-          currentOwner: true,
-          collection: true
-        }
+    const tokenEntityId = getTokenEntityId(contractAddress, id.toString());
+    let token = await this.get(NfToken, tokenEntityId, {
+      currentOwner: true,
+      collection: true
+    });
+
+    if (!token || (token && (!token.name || !token.symbol))) {
+      token = await createNfToken({
+        id: tokenEntityId,
+        nativeId: id,
+        ctx: this.context,
+        contractAddress,
+        contractStandard,
+        block,
+        owner
       });
-      if (!token || (token && (!token.name || !token.symbol))) {
-        token = await createNfToken({
-          id: tokenEntityId,
-          nativeId: id,
-          ctx: this.context,
-          contractAddress,
-          contractStandard,
-          block,
-          owner
-        });
-      }
-      this.add(token);
     }
+
+    this.add(token);
 
     return token;
   }

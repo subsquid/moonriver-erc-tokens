@@ -1,4 +1,5 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
+import * as marshal from "./marshal"
 import {Collection} from "./collection.model"
 import {Account} from "./account.model"
 
@@ -32,4 +33,12 @@ export class NfToken {
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
   currentOwner!: Account
+
+  @Index_()
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
+
+  @Index_()
+  @Column_("bool", {nullable: false})
+  isBurned!: boolean
 }
