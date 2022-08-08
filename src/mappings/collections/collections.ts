@@ -1,18 +1,15 @@
 import { Collection, ContractStandard } from '../../model';
-import { SubstrateBlock } from '@subsquid/substrate-processor';
-import { Context } from '../../processor';
+import * as utils from '../utils';
 
 export function createCollection({
   id,
-  ctx,
-  contractStandard,
-  block
+  contractStandard
 }: {
   id: string;
-  ctx: Context;
   contractStandard: ContractStandard;
-  block: SubstrateBlock;
 }): Collection {
+  const block = utils.common.blockContextManager.getCurrentBlock();
+
   return new Collection({
     id,
     collectionType: contractStandard,

@@ -1,14 +1,10 @@
-import { EvmLogEvent, SubstrateBlock } from '@subsquid/substrate-processor';
 import * as erc20 from '../../../abi/erc20';
-import { Context } from '../../../processor';
 import * as utils from '../../utils';
 import { TransferDirection } from '../../../model';
 
-export async function handleErc20Transfer(
-  ctx: Context,
-  block: SubstrateBlock,
-  event: EvmLogEvent
-): Promise<void> {
+export async function handleErc20Transfer(): Promise<void> {
+  const event = utils.common.blockContextManager.getCurrentEvent();
+
   const {
     from,
     to,
@@ -19,8 +15,6 @@ export async function handleErc20Transfer(
     amount,
     from,
     to,
-    event,
-    block
   });
 
   await utils.entity.accountsFtTransferManager.getOrCreate({

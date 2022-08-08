@@ -3,11 +3,9 @@ import {
   ContractStandard,
   NfToken,
   Account,
-  TransferDirection
 } from '../../model';
 import { Context } from '../../processor';
 import * as utils from '../utils';
-import { EvmLogEvent, SubstrateBlock } from '@subsquid/substrate-processor';
 
 import { getTokenDetails } from './utils';
 import * as erc1155 from '../../abi/erc1155';
@@ -18,7 +16,6 @@ export async function createNfToken({
   contractAddress,
   contractStandard,
   owner,
-  block,
   ctx
 }: {
   id: string;
@@ -26,21 +23,18 @@ export async function createNfToken({
   contractAddress: string;
   contractStandard: ContractStandard;
   owner: Account;
-  block: SubstrateBlock;
   ctx: Context;
 }): Promise<NfToken> {
   const { name, symbol, uri } = await getTokenDetails({
     tokenId: nativeId,
     contractAddress,
     contractStandard,
-    blockHeight: block.height,
     ctx
   });
 
   const collection = await utils.entity.collectionManager.getOrCreate({
     id: contractAddress,
     contractStandard,
-    block
   });
 
   return new NfToken({
@@ -56,11 +50,10 @@ export async function createNfToken({
   });
 }
 
-export async function handleErc1155UriChanged(
-  ctx: Context,
-  block: SubstrateBlock,
-  event: EvmLogEvent
-): Promise<void> {
+export async function handleErc1155UriChanged(): Promise<void> {
+  const block = utils.common.blockContextManager.getCurrentBlock();
+  const event = utils.common.blockContextManager.getCurrentEvent();
+
   console.log('-----------handleErc1155UriChanged');
   const { id, value } = erc1155.events['URI(string,uint256)'].decode(
     event.args
@@ -78,6 +71,13 @@ export async function handleErc1155UriChanged(
     }`
   );
   token.uri = value;
+
+  await utils.entity.uriUpdateActionsManager.getOrCreate(
+    event.evmTxHash,
+    token,
+    value
+  );
+
   utils.entity.nfTokenManager.add(token);
   throw new Error('DEBUG');
 }

@@ -14,6 +14,7 @@ import {
   getTokenBurnedStatus,
   getTransferType
 } from '../common';
+import * as utils from '../index';
 
 /**
  * ::::::::::::: TRANSFERS ERC20 TOKEN :::::::::::::
@@ -22,16 +23,15 @@ export class FtTransferManager extends EntitiesManager<FtTransfer> {
   async getOrCreate({
     from,
     to,
-    amount,
-    event,
-    block
+    amount
   }: {
     from: string;
     to: string;
     amount: BigNumber;
-    event: EvmLogEvent;
-    block: SubstrateBlock;
   }): Promise<FtTransfer> {
+    const block = utils.common.blockContextManager.getCurrentBlock();
+    const event = utils.common.blockContextManager.getCurrentEvent();
+
     const fromAccount = await accountsManager.getOrCreate(from);
     const toAccount = await accountsManager.getOrCreate(to);
 
@@ -45,8 +45,7 @@ export class FtTransferManager extends EntitiesManager<FtTransfer> {
       to: toAccount,
       token: await fTokenManager.getOrCreate({
         contractAddress: event.args.address,
-        contractStandard: ContractStandard.ERC20,
-        block
+        contractStandard: ContractStandard.ERC20
       }),
       amount: BigInt(amount.toString()),
       transferType: getTransferType(from, to)
@@ -67,8 +66,6 @@ export class NftTransferManager extends EntitiesManager<NftTransfer> {
     operator,
     amount,
     tokenId,
-    event,
-    block,
     isBatch,
     contractStandard
   }: {
@@ -77,11 +74,12 @@ export class NftTransferManager extends EntitiesManager<NftTransfer> {
     operator?: string;
     amount: BigNumber;
     tokenId: BigNumber;
-    event: EvmLogEvent;
-    block: SubstrateBlock;
     isBatch: boolean;
     contractStandard: ContractStandard;
   }): Promise<NftTransfer> {
+    const block = utils.common.blockContextManager.getCurrentBlock();
+    const event = utils.common.blockContextManager.getCurrentEvent();
+
     const fromAccount = await accountsManager.getOrCreate(from);
     const toAccount = await accountsManager.getOrCreate(to);
     const operatorAccount = operator
@@ -91,8 +89,7 @@ export class NftTransferManager extends EntitiesManager<NftTransfer> {
       id: tokenId,
       contractAddress: event.args.address,
       owner: toAccount,
-      contractStandard,
-      block
+      contractStandard
     });
     const transferType = getTransferType(from, to);
 

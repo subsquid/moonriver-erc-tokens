@@ -1,15 +1,11 @@
-import { EvmLogEvent, SubstrateBlock } from '@subsquid/substrate-processor';
 import { BigNumber } from 'ethers';
 import * as erc721 from '../../../abi/erc721';
 import { ContractStandard, TransferDirection } from '../../../model';
-import { Context } from '../../../processor';
 import * as utils from '../../utils';
 
-export async function handleErc721Transfer(
-  ctx: Context,
-  block: SubstrateBlock,
-  event: EvmLogEvent
-): Promise<void> {
+export async function handleErc721Transfer(): Promise<void> {
+  const event = utils.common.blockContextManager.getCurrentEvent();
+
   const { from, to, tokenId } = erc721.events[
     'Transfer(address,address,uint256)'
   ].decode(event.args);
@@ -20,9 +16,7 @@ export async function handleErc721Transfer(
     isBatch: false,
     tokenId,
     from,
-    to,
-    event,
-    block
+    to
   });
 
   await utils.entity.accountsNftTransferManager.getOrCreate({

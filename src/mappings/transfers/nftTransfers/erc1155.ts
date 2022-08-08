@@ -1,14 +1,10 @@
-import { EvmLogEvent, SubstrateBlock } from '@subsquid/substrate-processor';
 import * as erc1155 from '../../../abi/erc1155';
-import { Context } from '../../../processor';
 import * as utils from '../../utils';
 import { ContractStandard, TransferDirection } from '../../../model';
 
-export async function handleErc1155TransferSingle(
-  ctx: Context,
-  block: SubstrateBlock,
-  event: EvmLogEvent
-): Promise<void> {
+export async function handleErc1155TransferSingle(): Promise<void> {
+  const event = utils.common.blockContextManager.getCurrentEvent();
+
   const {
     operator,
     from,
@@ -26,9 +22,7 @@ export async function handleErc1155TransferSingle(
     tokenId,
     from,
     to,
-    operator,
-    event,
-    block
+    operator
   });
 
   await utils.entity.accountsNftTransferManager.getOrCreate({
@@ -44,11 +38,9 @@ export async function handleErc1155TransferSingle(
   });
 }
 
-export async function handleErc1155TransferBatch(
-  ctx: Context,
-  block: SubstrateBlock,
-  event: EvmLogEvent
-): Promise<void> {
+export async function handleErc1155TransferBatch(): Promise<void> {
+  const event = utils.common.blockContextManager.getCurrentEvent();
+
   const { operator, from, to, ids, values } = erc1155.events[
     'TransferBatch(address,address,address,uint256[],uint256[])'
   ].decode(event.args);
@@ -61,9 +53,7 @@ export async function handleErc1155TransferBatch(
       tokenId: ids[i],
       from,
       to,
-      operator,
-      event,
-      block
+      operator
     });
 
     await utils.entity.accountsNftTransferManager.getOrCreate({

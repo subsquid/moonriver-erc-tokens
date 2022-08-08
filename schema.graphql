@@ -46,9 +46,18 @@ type NfToken implements Token @entity {
   symbol: String @index
   collection: Collection!
   uri: String
+  uriUpdateActions: [UriUpdateAction]! @derivedFrom(field: "token")
   currentOwner: Account! # "to" account in transfer
   amount: BigInt! @index
   isBurned: Boolean! @index
+}
+
+type UriUpdateAction @entity {
+  id: ID!
+  token: NfToken!
+  newValue: String
+  blockNumber: BigInt!
+  timestamp: DateTime!
 }
 
 # ERC20 tokens (Fungible Token)

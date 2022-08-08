@@ -10,11 +10,9 @@ export class CollectionManager extends EntitiesManager<Collection> {
   async getOrCreate({
     id,
     contractStandard,
-    block
   }: {
     id: string;
     contractStandard: ContractStandard;
-    block: SubstrateBlock;
   }): Promise<Collection> {
     if (!this.context) throw new Error('context is not defined');
 
@@ -27,9 +25,7 @@ export class CollectionManager extends EntitiesManager<Collection> {
       if (!collection) {
         collection = createCollection({
           id,
-          ctx: this.context,
           contractStandard,
-          block
         });
       }
       this.add(collection);

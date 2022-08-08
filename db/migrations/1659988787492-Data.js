@@ -1,5 +1,5 @@
-module.exports = class Data1659982144440 {
-  name = 'Data1659982144440'
+module.exports = class Data1659988787492 {
+  name = 'Data1659988787492'
 
   async up(db) {
     await db.query(`CREATE TABLE "f_token" ("id" character varying NOT NULL, "name" text, "symbol" text, "decimals" integer, CONSTRAINT "PK_da896c08df3022e579355d781b9" PRIMARY KEY ("id"))`)
@@ -17,6 +17,8 @@ module.exports = class Data1659982144440 {
     await db.query(`CREATE INDEX "IDX_35cf1ac6d922fe093f515c54bb" ON "account_ft_transfer" ("account_id") `)
     await db.query(`CREATE TABLE "collection" ("id" character varying NOT NULL, "collection_type" character varying(7) NOT NULL, "created_at_block" numeric NOT NULL, "created_at" TIMESTAMP WITH TIME ZONE NOT NULL, CONSTRAINT "PK_ad3f485bbc99d875491f44d7c85" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_3fecce93788f86b3c2d76f5bb2" ON "collection" ("collection_type") `)
+    await db.query(`CREATE TABLE "uri_update_action" ("id" character varying NOT NULL, "new_value" text, "block_number" numeric NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "token_id" character varying NOT NULL, CONSTRAINT "PK_0de40fe0fe070f895e84d31ecd0" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE INDEX "IDX_49f300aa0df73f4d20ec04e6bd" ON "uri_update_action" ("token_id") `)
     await db.query(`CREATE TABLE "nf_token" ("id" character varying NOT NULL, "native_id" text NOT NULL, "name" text, "symbol" text, "uri" text, "amount" numeric NOT NULL, "is_burned" boolean NOT NULL, "collection_id" character varying NOT NULL, "current_owner_id" character varying NOT NULL, CONSTRAINT "PK_4b875f332d287d53286f0120060" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_062fda9c8d3cfc052e32dee8e4" ON "nf_token" ("name") `)
     await db.query(`CREATE INDEX "IDX_65b31e75b2f1d27835196b2be0" ON "nf_token" ("symbol") `)
@@ -41,6 +43,7 @@ module.exports = class Data1659982144440 {
     await db.query(`ALTER TABLE "ft_transfer" ADD CONSTRAINT "FK_41d6913b279f70b31c534bdcc75" FOREIGN KEY ("token_id") REFERENCES "f_token"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "account_ft_transfer" ADD CONSTRAINT "FK_5d54de48e8ca8863e03a35faf73" FOREIGN KEY ("transfer_id") REFERENCES "ft_transfer"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "account_ft_transfer" ADD CONSTRAINT "FK_35cf1ac6d922fe093f515c54bb4" FOREIGN KEY ("account_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "uri_update_action" ADD CONSTRAINT "FK_49f300aa0df73f4d20ec04e6bdc" FOREIGN KEY ("token_id") REFERENCES "nf_token"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "nf_token" ADD CONSTRAINT "FK_edd78f0b817ba4d3f9d239d10d7" FOREIGN KEY ("collection_id") REFERENCES "collection"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "nf_token" ADD CONSTRAINT "FK_70ed98b811638d56141fecf0fb8" FOREIGN KEY ("current_owner_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "nft_transfer" ADD CONSTRAINT "FK_e25e662117911bbbf337f8dcb62" FOREIGN KEY ("from_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
@@ -67,6 +70,8 @@ module.exports = class Data1659982144440 {
     await db.query(`DROP INDEX "public"."IDX_35cf1ac6d922fe093f515c54bb"`)
     await db.query(`DROP TABLE "collection"`)
     await db.query(`DROP INDEX "public"."IDX_3fecce93788f86b3c2d76f5bb2"`)
+    await db.query(`DROP TABLE "uri_update_action"`)
+    await db.query(`DROP INDEX "public"."IDX_49f300aa0df73f4d20ec04e6bd"`)
     await db.query(`DROP TABLE "nf_token"`)
     await db.query(`DROP INDEX "public"."IDX_062fda9c8d3cfc052e32dee8e4"`)
     await db.query(`DROP INDEX "public"."IDX_65b31e75b2f1d27835196b2be0"`)
@@ -91,6 +96,7 @@ module.exports = class Data1659982144440 {
     await db.query(`ALTER TABLE "ft_transfer" DROP CONSTRAINT "FK_41d6913b279f70b31c534bdcc75"`)
     await db.query(`ALTER TABLE "account_ft_transfer" DROP CONSTRAINT "FK_5d54de48e8ca8863e03a35faf73"`)
     await db.query(`ALTER TABLE "account_ft_transfer" DROP CONSTRAINT "FK_35cf1ac6d922fe093f515c54bb4"`)
+    await db.query(`ALTER TABLE "uri_update_action" DROP CONSTRAINT "FK_49f300aa0df73f4d20ec04e6bdc"`)
     await db.query(`ALTER TABLE "nf_token" DROP CONSTRAINT "FK_edd78f0b817ba4d3f9d239d10d7"`)
     await db.query(`ALTER TABLE "nf_token" DROP CONSTRAINT "FK_70ed98b811638d56141fecf0fb8"`)
     await db.query(`ALTER TABLE "nft_transfer" DROP CONSTRAINT "FK_e25e662117911bbbf337f8dcb62"`)

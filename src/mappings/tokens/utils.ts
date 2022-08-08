@@ -35,34 +35,29 @@ export async function getTokenDetails({
   tokenId = null,
   contractAddress,
   contractStandard,
-  blockHeight,
   ctx
 }: {
   tokenId?: BigNumber | null;
   contractAddress: string;
   contractStandard: ContractStandard;
-  blockHeight: number;
   ctx: Context;
 }): Promise<TokenDetails> {
   let contractInst = null;
   switch (contractStandard) {
     case ContractStandard.ERC20:
       contractInst = contracts.getContractErc20({
-        blockHeight,
         contractAddress,
         ctx
       });
       break;
     case ContractStandard.ERC721:
       contractInst = contracts.getContractErc721({
-        blockHeight,
         contractAddress,
         ctx
       });
       break;
     case ContractStandard.ERC1155:
       contractInst = contracts.getContractErc1155({
-        blockHeight,
         contractAddress,
         ctx
       });

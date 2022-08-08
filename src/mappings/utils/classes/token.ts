@@ -12,11 +12,9 @@ export class FTokenManager extends EntitiesManager<FToken> {
   async getOrCreate({
     contractAddress,
     contractStandard,
-    block
   }: {
     contractAddress: string;
     contractStandard: ContractStandard;
-    block: SubstrateBlock;
   }): Promise<FToken> {
     if (!this.context) throw new Error('context is not defined');
     let token = this.entitiesMap.get(contractAddress);
@@ -28,7 +26,6 @@ export class FTokenManager extends EntitiesManager<FToken> {
           ctx: this.context,
           contractAddress,
           contractStandard,
-          block
         });
       }
       this.add(token);
@@ -47,13 +44,11 @@ export class NfTokenManager extends EntitiesManager<NfToken> {
     contractAddress,
     contractStandard,
     owner,
-    block
   }: {
     id: BigNumber;
     contractAddress: string;
     contractStandard: ContractStandard;
     owner: Account;
-    block: SubstrateBlock;
   }): Promise<NfToken> {
     if (!this.context) throw new Error('context is not defined');
 
@@ -70,7 +65,6 @@ export class NfTokenManager extends EntitiesManager<NfToken> {
         ctx: this.context,
         contractAddress,
         contractStandard,
-        block,
         owner
       });
     }

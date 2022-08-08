@@ -1,7 +1,6 @@
 import type { FindOptionsRelations } from 'typeorm';
 import { FindOneOptions, EntityClass } from '@subsquid/typeorm-store';
 import { Context } from '../../../processor';
-import { EvmLogEvent } from '@subsquid/substrate-processor';
 
 interface EntityWithId {
   id: string;
@@ -10,21 +9,11 @@ interface EntityWithId {
 export class EntitiesManager<Entity extends EntityWithId> {
   context: Context | null = null;
 
-  currentEvent: EvmLogEvent | null = null;
-
   entitiesMap: Map<string, Entity> = new Map();
 
   init(ctx: Context) {
     this.context = ctx;
     return this;
-  }
-
-  setEvmEvent(evmEvent: EvmLogEvent): void {
-    this.currentEvent = evmEvent;
-  }
-
-  getEvmEvent(): EvmLogEvent | null {
-    return this.currentEvent;
   }
 
   add(entity: Entity): void {

@@ -1,6 +1,7 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Collection} from "./collection.model"
+import {UriUpdateAction} from "./uriUpdateAction.model"
 import {Account} from "./account.model"
 
 @Entity_()
@@ -29,6 +30,9 @@ export class NfToken {
 
   @Column_("text", {nullable: true})
   uri!: string | undefined | null
+
+  @OneToMany_(() => UriUpdateAction, e => e.token)
+  uriUpdateActions!: UriUpdateAction[]
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})

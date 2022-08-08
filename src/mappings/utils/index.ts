@@ -4,6 +4,7 @@ import {
   fTokenManager,
   nfTokenManager,
   ftTransferManager,
+  uriUpdateActionsManager,
   nftTransferManager,
   collectionManager,
   accountsFtTransferManager,
@@ -12,16 +13,19 @@ import {
   saveAllEntities
 } from './entityUtils';
 
+import { blockContextManager } from './blockContextUtils';
+
 export const entity = {
   accountsManager,
   fTokenManager,
   nfTokenManager,
   ftTransferManager,
   nftTransferManager,
+  uriUpdateActionsManager,
   collectionManager,
   accountsFtTransferManager,
   accountsNftTransferManager,
   initAllEntityManagers,
   saveAllEntities
 };
-export const common = { getTokenEntityId };
+export const common = { getTokenEntityId, blockContextManager };
