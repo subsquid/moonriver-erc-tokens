@@ -1,5 +1,4 @@
 import { BigNumber } from 'ethers';
-import { EvmLogEvent, SubstrateBlock } from '@subsquid/substrate-processor';
 import {
   ContractStandard,
   FtTransfer,

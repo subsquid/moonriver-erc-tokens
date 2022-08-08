@@ -54,7 +54,6 @@ export async function handleErc1155UriChanged(): Promise<void> {
   const block = utils.common.blockContextManager.getCurrentBlock();
   const event = utils.common.blockContextManager.getCurrentEvent();
 
-  console.log('-----------handleErc1155UriChanged');
   const { id, value } = erc1155.events['URI(string,uint256)'].decode(
     event.args
   );
