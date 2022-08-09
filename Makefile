@@ -21,7 +21,7 @@ build:
 codegen:
 	@npx squid-typeorm-codegen
 
-typegen: moonriverVersions.json
+typegen:
 	@npx squid-substrate-typegen ./typegen/typegen.json
 
 

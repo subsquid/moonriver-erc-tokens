@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "specVersions": "moonriverVersions.jsonl",
+  "specVersions": "https://moonriver.archive.subsquid.io/graphql",
   "typesBundle": "moonriver",
   "events": true,
   "calls": true

@@ -12,6 +12,7 @@ import * as v1300 from './v1300'
 import * as v1401 from './v1401'
 import * as v1502 from './v1502'
 import * as v1605 from './v1605'
+import * as v1701 from './v1701'
 
 export class AssetManagerAssetRegisteredEvent {
   private readonly _chain: Chain
@@ -3794,6 +3795,21 @@ export class DmpQueueExecutedDownwardEvent {
     assert(this.isV1300)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * Downward message executed with the given outcome.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('DmpQueue.ExecutedDownward') === '9b6c90aca74067a591eda76a227e61ce66cd6597483f828a039aba267c0d21a9'
+  }
+
+  /**
+   * Downward message executed with the given outcome.
+   */
+  get asV1701(): {messageId: Uint8Array, outcome: v1701.V2Outcome} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class DmpQueueInvalidFormatEvent {
@@ -3823,6 +3839,21 @@ export class DmpQueueInvalidFormatEvent {
    */
   get asV1101(): Uint8Array {
     assert(this.isV1101)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * Downward message is invalid XCM.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('DmpQueue.InvalidFormat') === '6bcb1469518e8e7bacd0242af782ebd652887f65f7377a9b2d81ccea6505416e'
+  }
+
+  /**
+   * Downward message is invalid XCM.
+   */
+  get asV1701(): {messageId: Uint8Array} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -3856,6 +3887,21 @@ export class DmpQueueOverweightEnqueuedEvent {
     assert(this.isV1101)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * Downward message is overweight and was placed in the overweight queue.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('DmpQueue.OverweightEnqueued') === 'ffa192c80e10233d155345fc4cc34bc357a97a6465c78ccf6a14b02ee5b8c21f'
+  }
+
+  /**
+   * Downward message is overweight and was placed in the overweight queue.
+   */
+  get asV1701(): {messageId: Uint8Array, overweightIndex: bigint, requiredWeight: bigint} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class DmpQueueOverweightServicedEvent {
@@ -3885,6 +3931,21 @@ export class DmpQueueOverweightServicedEvent {
    */
   get asV1101(): [bigint, bigint] {
     assert(this.isV1101)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * Downward message from the overweight queue was executed.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('DmpQueue.OverweightServiced') === '7deec7d9ba4a81157571b321671d50b393890bd802f27d9b3ba2609ffa497713'
+  }
+
+  /**
+   * Downward message from the overweight queue was executed.
+   */
+  get asV1701(): {overweightIndex: bigint, weightUsed: bigint} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -3918,6 +3979,21 @@ export class DmpQueueUnsupportedVersionEvent {
     assert(this.isV1101)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * Downward message is unsupported version of XCM.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('DmpQueue.UnsupportedVersion') === '6bcb1469518e8e7bacd0242af782ebd652887f65f7377a9b2d81ccea6505416e'
+  }
+
+  /**
+   * Downward message is unsupported version of XCM.
+   */
+  get asV1701(): {messageId: Uint8Array} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class DmpQueueWeightExhaustedEvent {
@@ -3947,6 +4023,21 @@ export class DmpQueueWeightExhaustedEvent {
    */
   get asV1101(): [Uint8Array, bigint, bigint] {
     assert(this.isV1101)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * The weight limit for handling downward messages was reached.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('DmpQueue.WeightExhausted') === 'dcf12831e69a1760af0584247b404096aa4ce1c77c7b3caae95d831bf4afa0b2'
+  }
+
+  /**
+   * The weight limit for handling downward messages was reached.
+   */
+  get asV1701(): {messageId: Uint8Array, remainingWeight: bigint, requiredWeight: bigint} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -4254,6 +4345,21 @@ export class EthereumExecutedEvent {
    */
   get asV1401(): [Uint8Array, Uint8Array, Uint8Array, v1401.ExitReason] {
     assert(this.isV1401)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * An ethereum transaction was successfully executed. [from, to/contract_address, transaction_hash, exit_reason]
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('Ethereum.Executed') === '42c632fb85f0ab54f0811a41be276501476d6d3e1e0169c6a6db6afdd63e7893'
+  }
+
+  /**
+   * An ethereum transaction was successfully executed. [from, to/contract_address, transaction_hash, exit_reason]
+   */
+  get asV1701(): [Uint8Array, Uint8Array, Uint8Array, v1701.ExitReason] {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -7702,6 +7808,21 @@ export class ParachainSystemDownwardMessagesProcessedEvent {
     assert(this.isV49)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * Downward messages were processed using the given weight.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('ParachainSystem.DownwardMessagesProcessed') === '83022e6226975081ba018c2b45a90d494bc922ece44e69af0322583651264f8e'
+  }
+
+  /**
+   * Downward messages were processed using the given weight.
+   */
+  get asV1701(): {weightUsed: bigint, dmqHead: Uint8Array} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class ParachainSystemDownwardMessagesReceivedEvent {
@@ -7733,6 +7854,21 @@ export class ParachainSystemDownwardMessagesReceivedEvent {
     assert(this.isV49)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * Some downward messages have been received and will be processed.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('ParachainSystem.DownwardMessagesReceived') === '1cdbdc8ac203922f95ae6ab3e8b98004e956389f7ec11480ec5633d29b48cf71'
+  }
+
+  /**
+   * Some downward messages have been received and will be processed.
+   */
+  get asV1701(): {count: number} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class ParachainSystemUpgradeAuthorizedEvent {
@@ -7762,6 +7898,21 @@ export class ParachainSystemUpgradeAuthorizedEvent {
     assert(this.isV49)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * An upgrade has been authorized.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('ParachainSystem.UpgradeAuthorized') === '9e5c86c297bd88fae31bc40119e44695818ddc3ab8842b90daeb12771005c70d'
+  }
+
+  /**
+   * An upgrade has been authorized.
+   */
+  get asV1701(): {codeHash: Uint8Array} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class ParachainSystemValidationFunctionAppliedEvent {
@@ -7789,6 +7940,21 @@ export class ParachainSystemValidationFunctionAppliedEvent {
    */
   get asV49(): number {
     assert(this.isV49)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * The validation function was applied as of the contained relay chain block number.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('ParachainSystem.ValidationFunctionApplied') === 'f35adbaa82c93636884997faedd16369ac498b9208d7c11f2233b9ef2aa4f092'
+  }
+
+  /**
+   * The validation function was applied as of the contained relay chain block number.
+   */
+  get asV1701(): {relayChainBlockNum: number} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -8606,6 +8772,23 @@ export class ProxyAnonymousCreatedEvent {
     assert(this.isV1201)
     return this._chain.decodeEvent(this.event)
   }
+
+  /**
+   * Anonymous account has been created by new proxy with given
+   * disambiguation index and proxy type.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('Proxy.AnonymousCreated') === '6be83142c424012785bb4b755c779eccc9749e88fbccf01c050f9d04e352df59'
+  }
+
+  /**
+   * Anonymous account has been created by new proxy with given
+   * disambiguation index and proxy type.
+   */
+  get asV1701(): {anonymous: Uint8Array, who: Uint8Array, proxyType: v1701.ProxyType, disambiguationIndex: number} {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
 }
 
 export class ProxyProxyAddedEvent {
@@ -8648,6 +8831,21 @@ export class ProxyProxyAddedEvent {
    */
   get asV1201(): {delegator: Uint8Array, delegatee: Uint8Array, proxyType: v1201.ProxyType, delay: number} {
     assert(this.isV1201)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * A proxy was added.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('Proxy.ProxyAdded') === 'ec182b84d8142fab410a8bcf26875a9d45c21205f402aebdaa6a77c2dc59606c'
+  }
+
+  /**
+   * A proxy was added.
+   */
+  get asV1701(): {delegator: Uint8Array, delegatee: Uint8Array, proxyType: v1701.ProxyType, delay: number} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -8781,6 +8979,21 @@ export class ProxyProxyRemovedEvent {
    */
   get asV1605(): {delegator: Uint8Array, delegatee: Uint8Array, proxyType: v1605.ProxyType, delay: number} {
     assert(this.isV1605)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * A proxy was removed.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('Proxy.ProxyRemoved') === 'ec182b84d8142fab410a8bcf26875a9d45c21205f402aebdaa6a77c2dc59606c'
+  }
+
+  /**
+   * A proxy was removed.
+   */
+  get asV1701(): {delegator: Uint8Array, delegatee: Uint8Array, proxyType: v1701.ProxyType, delay: number} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }
@@ -10352,6 +10565,35 @@ export class UtilityBatchCompletedEvent {
   }
 }
 
+export class UtilityBatchCompletedWithErrorsEvent {
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Utility.BatchCompletedWithErrors')
+    this._chain = ctx._chain
+    this.event = event
+  }
+
+  /**
+   * Batch of dispatches completed but has errors.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('Utility.BatchCompletedWithErrors') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+  }
+
+  /**
+   * Batch of dispatches completed but has errors.
+   */
+  get asV1701(): null {
+    assert(this.isV1701)
+    return this._chain.decodeEvent(this.event)
+  }
+}
+
 export class UtilityBatchInterruptedEvent {
   private readonly _chain: Chain
   private readonly event: Event
@@ -10567,6 +10809,35 @@ export class UtilityItemCompletedEvent {
    */
   get asV701(): null {
     assert(this.isV701)
+    return this._chain.decodeEvent(this.event)
+  }
+}
+
+export class UtilityItemFailedEvent {
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Utility.ItemFailed')
+    this._chain = ctx._chain
+    this.event = event
+  }
+
+  /**
+   * A single item within a Batch of dispatches has completed with error.
+   */
+  get isV1701(): boolean {
+    return this._chain.getEventHash('Utility.ItemFailed') === '59e964849fe0837c16b04e3c81782ce0ee22b9efe3d6a8d43d6ea61e9b25b998'
+  }
+
+  /**
+   * A single item within a Batch of dispatches has completed with error.
+   */
+  get asV1701(): {error: v1701.DispatchError} {
+    assert(this.isV1701)
     return this._chain.decodeEvent(this.event)
   }
 }

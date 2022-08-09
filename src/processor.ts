@@ -17,9 +17,9 @@ const processor = new SubstrateBatchProcessor()
   .setBatchSize(config.batchSize)
   .setDataSource({
     chain: config.chainNode,
-    archive: lookupArchive('moonriver', { release: 'FireSquid' })
+    archive: lookupArchive(config.archiveName, { release: 'FireSquid' })
   })
-  .setTypesBundle('moonriver')
+  .setTypesBundle(config.typesBundleName)
   .addEvmLog('*', {
     filter: [
       [

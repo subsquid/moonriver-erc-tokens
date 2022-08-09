@@ -1,5 +1,5 @@
 {
-  "name": "moonriver-erc20-erc721",
+  "name": "moonriver-erc-tokens",
   "private": true,
   "scripts": {
     "build": "rm -rf lib && tsc",
