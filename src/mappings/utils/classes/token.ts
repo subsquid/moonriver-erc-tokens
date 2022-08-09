@@ -4,6 +4,7 @@ import { createFToken, createNfToken } from '../../tokens';
 import { BigNumber } from 'ethers';
 import { getTokenEntityId } from '../common';
 import { EntitiesManager } from './common';
+import { getTokenDetails } from '../../tokens/utils';
 
 /**
  * ::::::::::::: ERC20 TOKEN :::::::::::::
@@ -11,25 +12,30 @@ import { EntitiesManager } from './common';
 export class FTokenManager extends EntitiesManager<FToken> {
   async getOrCreate({
     contractAddress,
-    contractStandard,
+    contractStandard
   }: {
     contractAddress: string;
     contractStandard: ContractStandard;
   }): Promise<FToken> {
     if (!this.context) throw new Error('context is not defined');
-    let token = this.entitiesMap.get(contractAddress);
+    let token = await this.get(FToken, contractAddress);
 
-    if (!token) {
-      token = await this.context.store.get(FToken, contractAddress);
-      if (!token || (token && (!token.name || !token.symbol))) {
-        token = await createFToken({
-          ctx: this.context,
-          contractAddress,
-          contractStandard,
-        });
-      }
-      this.add(token);
+    if (!token || (token && (!token.name || !token.symbol))) {
+      token = await createFToken({
+        ctx: this.context,
+        contractAddress,
+        contractStandard
+      });
+    } else if (token && (!token.name || !token.symbol)) {
+      const tokenDetails = await getTokenDetails({
+        contractAddress,
+        contractStandard,
+        ctx: this.context
+      });
+      token.name = tokenDetails.name;
+      token.symbol = tokenDetails.symbol;
     }
+    this.add(token);
 
     return token;
   }
@@ -43,7 +49,7 @@ export class NfTokenManager extends EntitiesManager<NfToken> {
     id,
     contractAddress,
     contractStandard,
-    owner,
+    owner
   }: {
     id: BigNumber;
     contractAddress: string;

@@ -25,17 +25,12 @@ export class AccountsFtTransferManager extends EntitiesManager<AccountFtTransfer
     direction: TransferDirection;
   }): Promise<AccountFtTransfer> {
     if (!this.context) throw new Error('context is not defined');
-    let accountTransfer = id ? this.entitiesMap.get(id) : null;
+    let accountTransfer = id ? await this.get(AccountFtTransfer, id) : null;
 
     if (!accountTransfer) {
-      accountTransfer = id
-        ? await this.context.store.get(AccountFtTransfer, id)
-        : null;
-      if (!accountTransfer) {
-        accountTransfer = createAccountFtTransfer(account, transfer, direction);
-      }
-      this.add(accountTransfer);
+      accountTransfer = createAccountFtTransfer(account, transfer, direction);
     }
+    this.add(accountTransfer);
 
     return accountTransfer;
   }

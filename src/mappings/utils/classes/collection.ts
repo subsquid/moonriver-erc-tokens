@@ -9,27 +9,22 @@ import { EntitiesManager } from './common';
 export class CollectionManager extends EntitiesManager<Collection> {
   async getOrCreate({
     id,
-    contractStandard,
+    contractStandard
   }: {
     id: string;
     contractStandard: ContractStandard;
   }): Promise<Collection> {
     if (!this.context) throw new Error('context is not defined');
 
-    let collection = this.entitiesMap.get(id);
+    let collection = await this.get(Collection, id);
 
     if (!collection) {
-      collection = await this.context.store.get(Collection, {
-        where: { id }
+      collection = createCollection({
+        id,
+        contractStandard
       });
-      if (!collection) {
-        collection = createCollection({
-          id,
-          contractStandard,
-        });
-      }
-      this.add(collection);
     }
+    this.add(collection);
 
     return collection;
   }
