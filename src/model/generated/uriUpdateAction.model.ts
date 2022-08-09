@@ -26,4 +26,7 @@ export class UriUpdateAction {
 
   @Column_("timestamp with time zone", {nullable: false})
   timestamp!: Date
+
+  @Column_("text", {nullable: false})
+  txnHash!: string
 }

@@ -59,6 +59,7 @@ type UriUpdateAction @entity {
   oldValue: String
   blockNumber: BigInt!
   timestamp: DateTime!
+  txnHash: String!
 }
 
 # ERC20 tokens (Fungible Token)

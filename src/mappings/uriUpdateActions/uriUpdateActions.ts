@@ -15,6 +15,7 @@ export function createUriUpdateActions({
   oldValue: string | null;
 }): UriUpdateAction {
   const block = utils.common.blockContextManager.getCurrentBlock();
+  const event = utils.common.blockContextManager.getCurrentEvent();
 
   return new UriUpdateAction({
     id,
@@ -22,7 +23,8 @@ export function createUriUpdateActions({
     newValue,
     oldValue,
     timestamp: new Date(block.timestamp),
-    blockNumber: BigInt(block.height.toString())
+    blockNumber: BigInt(block.height.toString()),
+    txnHash: event.evmTxHash
   });
 }
 
@@ -44,8 +46,6 @@ export async function handleErc1155UriChanged(): Promise<void> {
 
   if (!token) throw new Error('Token is not existing.');
 
-  console.log('old - ', token.uri)
-  console.log('new  - ', value)
   const oldUriVal = token.uri || null;
   token.uri = value;
 
