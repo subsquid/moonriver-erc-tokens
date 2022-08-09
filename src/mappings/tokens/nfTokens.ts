@@ -58,6 +58,11 @@ export async function handleErc1155UriChanged(): Promise<void> {
     event.args
   );
 
+  console.log('block - ', block.height.toString())
+  console.log('id - ', id.toString())
+  console.log('value - ', value)
+  console.log('contract - ', event.args.address)
+
   const token = await utils.entity.nfTokenManager.get(NfToken, id.toString(), {
     currentOwner: true,
     collection: true
