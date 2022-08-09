@@ -1,1 +1,1 @@
-export { createUriUpdateActions } from './uriUpdateActions';
+export { createUriUpdateActions, handleErc1155UriChanged } from './uriUpdateActions';

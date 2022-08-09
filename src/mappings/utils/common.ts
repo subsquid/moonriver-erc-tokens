@@ -44,24 +44,36 @@ export const getTransferType = (from: string, to: string): TransferType => {
 };
 
 export const getTokenTotalSupply = (
-  currentAmount: BigInt,
-  newAmount: BigInt,
+  currentAmount: bigint,
+  newAmount: bigint,
   txType: TransferType
 ): bigint => {
-  const newValue =
-    txType === TransferType.MINT
-      ? BigInt(
-          BigNumber.from(currentAmount)
-            .add(BigNumber.from(newAmount))
-            .toString()
-        )
-      : BigInt(
-          BigNumber.from(currentAmount)
-            .sub(BigNumber.from(newAmount))
-            .toString()
-        );
+  let newValue = currentAmount;
 
-  return newValue >= 0 ? newValue : BigInt(0);
+  switch (txType) {
+    case TransferType.MINT:
+      newValue = BigInt(
+        BigNumber.from(currentAmount).add(BigNumber.from(newAmount)).toString()
+      );
+      break;
+    case TransferType.BURN:
+      newValue = BigInt(
+        BigNumber.from(currentAmount).sub(BigNumber.from(newAmount)).toString()
+      );
+      break;
+    case TransferType.TRANSFER:
+      /**
+       * In case squid missed MINT event for particular token, we use fists occurred TRANSFER amount for initialization
+       * of token total supply. It's more workaround cases when squid is starting not from first block.
+       */
+      if (currentAmount === BigInt(0)) {
+        newValue = newAmount;
+      }
+      break;
+    default:
+  }
+
+  return newValue >= BigInt(0) ? newValue : BigInt(0);
 };
 
 export const getTokenBurnedStatus = (currentAmount: BigInt): boolean => {

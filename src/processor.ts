@@ -14,7 +14,7 @@ import * as utils from './mappings/utils';
 
 const database = new TypeormDatabase();
 const processor = new SubstrateBatchProcessor()
-  .setBlockRange({ from: 1000000 })
+  .setBlockRange({ from: 1032050 })
   .setBatchSize(config.batchSize)
   .setDataSource({
     chain: config.chainNode,
