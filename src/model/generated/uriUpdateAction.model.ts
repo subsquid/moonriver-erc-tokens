@@ -18,9 +18,15 @@ export class UriUpdateAction {
   @Column_("text", {nullable: true})
   newValue!: string | undefined | null
 
+  @Column_("text", {nullable: true})
+  oldValue!: string | undefined | null
+
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   blockNumber!: bigint
 
   @Column_("timestamp with time zone", {nullable: false})
   timestamp!: Date
+
+  @Column_("text", {nullable: false})
+  txnHash!: string
 }

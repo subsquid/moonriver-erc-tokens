@@ -56,8 +56,10 @@ type UriUpdateAction @entity {
   id: ID!
   token: NfToken!
   newValue: String
+  oldValue: String
   blockNumber: BigInt!
   timestamp: DateTime!
+  txnHash: String!
 }
 
 # ERC20 tokens (Fungible Token)
