@@ -41,7 +41,6 @@ export class AccountsFtTransferManager extends EntitiesManager<AccountFtTransfer
 }
 
 export class AccountsNftTransferManager extends EntitiesManager<AccountNftTransfer> {
-
   constructor(entity: typeof AccountNftTransfer) {
     super({ entity });
   }
@@ -58,21 +57,12 @@ export class AccountsNftTransferManager extends EntitiesManager<AccountNftTransf
     direction: TransferDirection;
   }): Promise<AccountNftTransfer> {
     if (!this.context) throw new Error('context is not defined');
-    let accountTransfer = id ? this.entitiesMap.get(id) : null;
+    let accountTransfer = id ? await this.get(id) : null;
 
     if (!accountTransfer) {
-      accountTransfer = id
-        ? await this.context.store.get(AccountNftTransfer, id)
-        : null;
-      if (!accountTransfer) {
-        accountTransfer = createAccountNftTransfer(
-          account,
-          transfer,
-          direction
-        );
-      }
-      this.add(accountTransfer);
+      accountTransfer = createAccountNftTransfer(account, transfer, direction);
     }
+    this.add(accountTransfer);
 
     return accountTransfer;
   }

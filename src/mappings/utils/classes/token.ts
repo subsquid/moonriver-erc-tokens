@@ -11,6 +11,8 @@ import { BigNumber } from 'ethers';
 import { getTokenEntityId } from '../common';
 import { EntitiesManager } from './common';
 import { getTokenDetails } from '../../tokens/utils';
+import SquidCache from '../squid-cache';
+
 
 /**
  * ::::::::::::: ERC20 TOKEN :::::::::::::
@@ -45,7 +47,8 @@ export class FTokenManager extends EntitiesManager<FToken> {
       token.name = tokenDetails.name;
       token.symbol = tokenDetails.symbol;
     }
-    this.add(token);
+    // this.add(token);
+    SquidCache.upsert(token);
 
     return token;
   }
@@ -89,7 +92,8 @@ export class NfTokenManager extends EntitiesManager<NfToken> {
       });
     }
 
-    this.add(token);
+    // this.add(token);
+    SquidCache.upsert(token);
 
     return token;
   }

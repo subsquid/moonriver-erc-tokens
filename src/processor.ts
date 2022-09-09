@@ -1,16 +1,25 @@
 import { lookupArchive } from '@subsquid/archive-registry';
 import { Store, TypeormDatabase } from '@subsquid/typeorm-store';
-import {
-  BatchContext,
-  SubstrateBatchProcessor,
-  BatchProcessorItem
-} from '@subsquid/substrate-processor';
+import { BatchContext, SubstrateBatchProcessor, BatchProcessorItem } from '@subsquid/substrate-processor';
 import * as erc20 from './abi/erc20';
 import * as erc721 from './abi/erc721';
 import * as erc1155 from './abi/erc1155';
 import * as modules from './mappings';
 import * as config from './config';
 import * as utils from './mappings/utils';
+import SquidCache from './mappings/utils/squid-cache';
+import {
+  Account,
+  AccountFtTransfer,
+  AccountNftTransfer,
+  Collection,
+  FToken,
+  FtTransfer,
+  NfToken,
+  NftTransfer,
+  UriUpdateAction,
+  AccountFTokenBalance
+} from './model';
 
 const database = new TypeormDatabase();
 const processor = new SubstrateBatchProcessor()
@@ -25,12 +34,8 @@ const processor = new SubstrateBatchProcessor()
       [
         erc20.events['Transfer(address,address,uint256)'].topic,
         erc721.events['Transfer(address,address,uint256)'].topic,
-        erc1155.events[
-          'TransferBatch(address,address,address,uint256[],uint256[])'
-        ].topic,
-        erc1155.events[
-          'TransferSingle(address,address,address,uint256,uint256)'
-        ].topic,
+        erc1155.events['TransferBatch(address,address,address,uint256[],uint256[])'].topic,
+        erc1155.events['TransferSingle(address,address,address,uint256,uint256)'].topic,
         erc1155.events['URI(string,uint256)'].topic
       ]
     ]
@@ -40,11 +45,25 @@ type Item = BatchProcessorItem<typeof processor>;
 export type Context = BatchContext<Store, Item>;
 
 processor.run(database, async (ctx: Context) => {
+  SquidCache.init(ctx, [
+    Account,
+    Collection,
+    FToken,
+    [NfToken, { currentOwner: true, collection: true }],
+    UriUpdateAction,
+    FtTransfer,
+    NftTransfer,
+    AccountFtTransfer,
+    AccountNftTransfer,
+    [AccountFTokenBalance, { token: true, account: true }]
+  ]);
+
   utils.entity.initAllEntityManagers(ctx);
+
   await utils.entity.prefetchEntities(ctx);
 
-  for await (const block of ctx.blocks) {
-    for await (const item of block.items) {
+  for (const block of ctx.blocks) {
+    for (const item of block.items) {
       if (item.name === 'EVM.Log') {
         utils.common.blockContextManager.init(block.header, item.event);
         switch (item.event.args.topics[0]) {
@@ -60,14 +79,10 @@ processor.run(database, async (ctx: Context) => {
               }
             }
             break;
-          case erc1155.events[
-            'TransferBatch(address,address,address,uint256[],uint256[])'
-          ].topic:
+          case erc1155.events['TransferBatch(address,address,address,uint256[],uint256[])'].topic:
             await modules.handleErc1155TransferBatch();
             break;
-          case erc1155.events[
-            'TransferSingle(address,address,address,uint256,uint256)'
-          ].topic:
+          case erc1155.events['TransferSingle(address,address,address,uint256,uint256)'].topic:
             await modules.handleErc1155TransferSingle();
             break;
           case erc1155.events['URI(string,uint256)'].topic:
@@ -80,5 +95,7 @@ processor.run(database, async (ctx: Context) => {
     }
   }
 
-  await utils.entity.saveAllEntities();
+  // await utils.entity.saveAllEntities();
+  await SquidCache.flush();
+  SquidCache.purge();
 });

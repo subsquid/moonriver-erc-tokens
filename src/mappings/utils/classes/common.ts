@@ -3,6 +3,7 @@ import { FindOneOptions, EntityClass } from '@subsquid/typeorm-store';
 import { Context } from '../../../processor';
 import { FindOptionsWhere } from 'typeorm';
 import { splitIntoBatches } from '../common';
+import SquidCache from '../squid-cache';
 
 interface EntityWithId {
   id: string;
@@ -27,7 +28,9 @@ export class EntitiesManager<Entity extends EntityWithId> {
   }
 
   add(entity: Entity): void {
-    this.entitiesMap.set(entity.id, entity);
+    // this.entitiesMap.set(entity.id, entity);
+    //@ts-ignore
+    SquidCache.upsert(entity);
   }
 
   /**
@@ -58,10 +61,7 @@ export class EntitiesManager<Entity extends EntityWithId> {
     relations?: FindOptionsRelations<Entity>
   ): Promise<void> {
     if (!this.context) throw new Error('context is not defined');
-    if (
-      !this.prefetchItemIdsList ||
-      this.prefetchItemIdsList.length === 0
-    )
+    if (!this.prefetchItemIdsList || this.prefetchItemIdsList.length === 0)
       return;
 
     for (const chunk of splitIntoBatches(this.prefetchItemIdsList, 1000)) {
@@ -92,16 +92,23 @@ export class EntitiesManager<Entity extends EntityWithId> {
     relations?: FindOptionsRelations<Entity>
   ): Promise<Entity | null> {
     if (!this.context) throw new Error('context is not defined');
-    let item = this.entitiesMap.get(id) || null;
+    // let item = this.entitiesMap.get(id) || null;
+    let item = SquidCache.get(this.entity, id) || null;
 
     if (!item) {
-      const requestParams = {
-        where: { id }
-      } as FindOneOptions<Entity>;
-
-      if (relations) requestParams.relations = relations;
-
-      item = (await this.context.store.get(this.entity, requestParams)) || null;
+      // this.context.log.warn(
+      //   `Item has not been found in cache: ${this.entity.name} ID - ${id}`
+      // );
+      // this.context.log.warn(
+      //   `Forbidden fetch action of ${this.entity.name} ID - ${id}`
+      // );
+      // const requestParams = {
+      //   where: { id }
+      // } as FindOneOptions<Entity>;
+      //
+      // if (relations) requestParams.relations = relations;
+      //
+      // item = (await this.context.store.get(this.entity, requestParams)) || null;
     }
 
     return item;

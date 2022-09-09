@@ -16,6 +16,7 @@ import {
   UriUpdateAction,
   AccountFTokenBalance
 } from '../../model';
+import SquidCache from './squid-cache';
 
 export function initAllEntityManagers(ctx: Context): void {
   accountsManager.init(ctx);
@@ -67,8 +68,8 @@ export const accountsNftTransferManager =
   new entityManagerClasses.AccountsNftTransferManager(AccountNftTransfer);
 
 export async function prefetchEntities(ctx: Context): Promise<void> {
-  for await (const block of ctx.blocks) {
-    for await (const item of block.items) {
+  for (const block of ctx.blocks) {
+    for (const item of block.items) {
       if (item.name === 'EVM.Log') {
         let decodedEvent = null;
         switch (item.event.args.topics[0]) {
@@ -81,14 +82,16 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
               decodedEvent = erc20.events[
                 'Transfer(address,address,uint256)'
               ].decode(item.event.args);
-              accountsManager.addPrefetchItemId([
+
+              SquidCache.deferredLoad(Account, [
                 decodedEvent.from,
                 decodedEvent.to
               ]);
-              fTokenManager.addPrefetchItemId(
+              SquidCache.deferredLoad(
+                FToken,
                 item.event.args.address.toString()
               );
-              accountFTokenBalancesManager.addPrefetchItemId([
+              SquidCache.deferredLoad(AccountFTokenBalance, [
                 getAccountFTokenBalanceEntityId(
                   decodedEvent.from.toString(),
                   item.event.args.address.toString()
@@ -98,24 +101,58 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
                   item.event.args.address.toString()
                 )
               ]);
+              // accountsManager.addPrefetchItemId([
+              //   decodedEvent.from,
+              //   decodedEvent.to
+              // ]);
+              // fTokenManager.addPrefetchItemId(
+              //   item.event.args.address.toString()
+              // );
+              // accountFTokenBalancesManager.addPrefetchItemId([
+              //   getAccountFTokenBalanceEntityId(
+              //     decodedEvent.from.toString(),
+              //     item.event.args.address.toString()
+              //   ),
+              //   getAccountFTokenBalanceEntityId(
+              //     decodedEvent.to.toString(),
+              //     item.event.args.address.toString()
+              //   )
+              // ]);
             } catch (e) {
               try {
                 decodedEvent = erc721.events[
                   'Transfer(address,address,uint256)'
                 ].decode(item.event.args);
-                accountsManager.addPrefetchItemId([
+
+                SquidCache.deferredLoad(Account, [
                   decodedEvent.from,
                   decodedEvent.to
                 ]);
-                nfTokenManager.addPrefetchItemId(
+                SquidCache.deferredLoad(
+                  NfToken,
                   getTokenEntityId(
                     item.event.args.address.toString(),
                     decodedEvent.tokenId.toString()
                   )
                 );
-                collectionManager.addPrefetchItemId(
+                SquidCache.deferredLoad(
+                  Collection,
                   item.event.args.address.toString()
                 );
+
+                // accountsManager.addPrefetchItemId([
+                //   decodedEvent.from,
+                //   decodedEvent.to
+                // ]);
+                // nfTokenManager.addPrefetchItemId(
+                //   getTokenEntityId(
+                //     item.event.args.address.toString(),
+                //     decodedEvent.tokenId.toString()
+                //   )
+                // );
+                // collectionManager.addPrefetchItemId(
+                //   item.event.args.address.toString()
+                // );
               } catch (err) {}
             }
 
@@ -129,12 +166,14 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
             decodedEvent = erc1155.events[
               'TransferBatch(address,address,address,uint256[],uint256[])'
             ].decode(item.event.args);
-            accountsManager.addPrefetchItemId([
+
+            SquidCache.deferredLoad(Account, [
               decodedEvent.operator,
               decodedEvent.from,
               decodedEvent.to
             ]);
-            nfTokenManager.addPrefetchItemId(
+            SquidCache.deferredLoad(
+              NfToken,
               decodedEvent.ids.map((id) =>
                 getTokenEntityId(
                   item.event.args.address.toString(),
@@ -142,9 +181,26 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
                 )
               )
             );
-            collectionManager.addPrefetchItemId(
+            SquidCache.deferredLoad(
+              Collection,
               item.event.args.address.toString()
             );
+            // accountsManager.addPrefetchItemId([
+            //   decodedEvent.operator,
+            //   decodedEvent.from,
+            //   decodedEvent.to
+            // ]);
+            // nfTokenManager.addPrefetchItemId(
+            //   decodedEvent.ids.map((id) =>
+            //     getTokenEntityId(
+            //       item.event.args.address.toString(),
+            //       id.toString()
+            //     )
+            //   )
+            // );
+            // collectionManager.addPrefetchItemId(
+            //   item.event.args.address.toString()
+            // );
             break;
           /**
            * ===================================================================
@@ -155,20 +211,37 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
             decodedEvent = erc1155.events[
               'TransferSingle(address,address,address,uint256,uint256)'
             ].decode(item.event.args);
-            accountsManager.addPrefetchItemId([
+
+            SquidCache.deferredLoad(Account, [
               decodedEvent.operator,
               decodedEvent.from,
               decodedEvent.to
             ]);
-            nfTokenManager.addPrefetchItemId(
+            SquidCache.deferredLoad(
+              NfToken,
               getTokenEntityId(
                 item.event.args.address.toString(),
                 decodedEvent.id.toString()
               )
             );
-            collectionManager.addPrefetchItemId(
+            SquidCache.deferredLoad(
+              Collection,
               item.event.args.address.toString()
             );
+            // accountsManager.addPrefetchItemId([
+            //   decodedEvent.operator,
+            //   decodedEvent.from,
+            //   decodedEvent.to
+            // ]);
+            // nfTokenManager.addPrefetchItemId(
+            //   getTokenEntityId(
+            //     item.event.args.address.toString(),
+            //     decodedEvent.id.toString()
+            //   )
+            // );
+            // collectionManager.addPrefetchItemId(
+            //   item.event.args.address.toString()
+            // );
             break;
           /**
            * ===================================================================
@@ -177,12 +250,19 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
             decodedEvent = erc1155.events['URI(string,uint256)'].decode(
               item.event.args
             );
-            nfTokenManager.addPrefetchItemId(
+            SquidCache.deferredLoad(
+              NfToken,
               getTokenEntityId(
                 item.event.args.address.toString(),
                 decodedEvent.id.toString()
               )
             );
+            // nfTokenManager.addPrefetchItemId(
+            //   getTokenEntityId(
+            //     item.event.args.address.toString(),
+            //     decodedEvent.id.toString()
+            //   )
+            // );
             break;
 
           default:
@@ -190,14 +270,17 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
       }
     }
   }
-  await accountsManager.prefetchEntities();
-  await fTokenManager.prefetchEntities();
-  await nfTokenManager.prefetchEntities({
-    currentOwner: true,
-    collection: true
-  });
-  await accountFTokenBalancesManager.prefetchEntities({
-    token: true,
-    account: true
-  });
+  await SquidCache.load();
+  // console.log('after load - ', [...SquidCache.entries()])
+
+  // await accountsManager.prefetchEntities();
+  // await fTokenManager.prefetchEntities();
+  // await nfTokenManager.prefetchEntities({
+  //   currentOwner: true,
+  //   collection: true
+  // });
+  // await accountFTokenBalancesManager.prefetchEntities({
+  //   token: true,
+  //   account: true
+  // });
 }
