@@ -71,6 +71,8 @@ export async function prefetchEntities(ctx: Context): Promise<void> {
     for await (const item of block.items) {
       if (item.name === 'EVM.Log') {
         let decodedEvent = null;
+          console.log('block - ', block.header.height)
+          console.log('item.event.args - ', item.event.args)
         switch (item.event.args.topics[0]) {
           /**
            * ===================================================================
