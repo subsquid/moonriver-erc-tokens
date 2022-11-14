@@ -1,6 +1,7 @@
 import * as erc1155 from '../../../abi/erc1155';
 import * as utils from '../../utils';
 import { ContractStandard, TransferDirection } from '../../../model';
+import { BigNumber } from 'ethers';
 
 export async function handleErc1155TransferSingle(): Promise<void> {
   const event = utils.common.blockContextManager.getCurrentEvent();
@@ -46,10 +47,11 @@ export async function handleErc1155TransferBatch(): Promise<void> {
   ].decode(event.args);
 
   for (let i = 0; i < ids.length; i++) {
+    const valuesList = [...values()];
     const transfer = await utils.entity.nftTransferManager.getOrCreate({
       contractStandard: ContractStandard.ERC1155,
       isBatch: true,
-      amount: values[i],
+      amount: BigNumber.from(valuesList[i].toString()),
       tokenId: ids[i],
       from,
       to,
