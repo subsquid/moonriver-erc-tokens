@@ -6,21 +6,15 @@ import { BigNumber } from 'ethers';
 export async function handleErc1155TransferSingle(): Promise<void> {
   const event = utils.common.blockContextManager.getCurrentEvent();
 
-  const {
-    operator,
-    from,
-    to,
-    id: tokenId,
-    value: amount
-  } = erc1155.events[
+  const [operator, from, to, id, value] = erc1155.events[
     'TransferSingle(address,address,address,uint256,uint256)'
   ].decode(event.args);
 
   const transfer = await utils.entity.nftTransferManager.getOrCreate({
     contractStandard: ContractStandard.ERC1155,
     isBatch: false,
-    amount,
-    tokenId,
+    amount: value,
+    tokenId: id,
     from,
     to,
     operator
@@ -42,16 +36,15 @@ export async function handleErc1155TransferSingle(): Promise<void> {
 export async function handleErc1155TransferBatch(): Promise<void> {
   const event = utils.common.blockContextManager.getCurrentEvent();
 
-  const { operator, from, to, ids, values } = erc1155.events[
+  const [operator, from, to, ids, values] = erc1155.events[
     'TransferBatch(address,address,address,uint256[],uint256[])'
   ].decode(event.args);
 
   for (let i = 0; i < ids.length; i++) {
-    const valuesList = [...values()];
     const transfer = await utils.entity.nftTransferManager.getOrCreate({
       contractStandard: ContractStandard.ERC1155,
       isBatch: true,
-      amount: BigNumber.from(valuesList[i].toString()),
+      amount: values[i],
       tokenId: ids[i],
       from,
       to,
