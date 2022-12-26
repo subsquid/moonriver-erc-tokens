@@ -31,14 +31,10 @@ export function createUriUpdateActions({
 export async function handleErc1155UriChanged(): Promise<void> {
   const event = utils.common.blockContextManager.getCurrentEvent();
   const block = utils.common.blockContextManager.getCurrentBlock();
-  console.log('event.id', event.id);
-  console.log('event.indexInBlock', event.indexInBlock);
-  console.log('block.height', block.height);
 
   const { id, value } = erc1155.events['URI(string,uint256)'].decode(
     event.args
   );
-  console.log(`id - ${id.toString()} || value - ${value}`);
 
   const token = await utils.entity.nfTokenManager.get(
     getTokenEntityId(event.args.address, id.toString()),
@@ -48,7 +44,17 @@ export async function handleErc1155UriChanged(): Promise<void> {
     }
   );
 
-  if (!token) throw new Error('Token is not existing.');
+  if (!token) {
+    // throw new Error('Token is not existing.');
+    console.warn(
+      `Token (ID ${
+        id ? id.toString() : 'n/a'
+      } is not existing) in action URI Changed with value of URI - ${value} in block #${
+        block.height
+      }/event #${event.indexInBlock}`
+    );
+    return;
+  }
 
   const oldUriVal = token.uri || null;
   token.uri = value;
