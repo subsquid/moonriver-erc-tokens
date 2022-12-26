@@ -31,13 +31,14 @@ export function createUriUpdateActions({
 export async function handleErc1155UriChanged(): Promise<void> {
   const event = utils.common.blockContextManager.getCurrentEvent();
   const block = utils.common.blockContextManager.getCurrentBlock();
-  console.log('event.id', event.id)
-  console.log('event.indexInBlock', event.indexInBlock)
-  console.log('block.height', block.height)
+  console.log('event.id', event.id);
+  console.log('event.indexInBlock', event.indexInBlock);
+  console.log('block.height', block.height);
 
   const { id, value } = erc1155.events['URI(string,uint256)'].decode(
     event.args
   );
+  console.log(`id - ${id.toString()} || value - ${value}`);
 
   const token = await utils.entity.nfTokenManager.get(
     getTokenEntityId(event.args.address, id.toString()),
